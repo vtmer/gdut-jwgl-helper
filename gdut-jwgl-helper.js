@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name       GDUT½ÌÎñ¹ÜÀíÏµÍ³helper
+// @name       GDUT教务管理系统helper
 // @namespace  http://use.i.E.your.homepage/
 // @version    0.1
 // @description  hack
