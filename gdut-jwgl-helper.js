@@ -8,6 +8,11 @@
 // @require http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js
 // ==/UserScript==
 
+var url = document.URL.toString();
+var xsjxpj = /.*xsjxpj.aspx.*/;
+var xscj = /.*xscj.aspx.*/;
+var default2 = /.*default2.aspx.*/;
+
 var helper = {
     scores:[],
     points:[], 
@@ -21,12 +26,10 @@ var helper = {
 
 //显示平均绩点和平均分
 function ShowAvgPoint(){
-    var table = $('#DataGrid1');
-    if(table == null) return;
+    if(!xscj.test(url)) return;
 
+    var table = $("#DataGrid1");
     var rows = $('tr',table);
-    var tds = $(rows[0]).children();
-    if($(tds[0]).text().trim() != '课程代码') return;
 
     for(var i=1; i<rows.length; i++){
         var tds = $(rows[i]).children();
@@ -66,12 +69,12 @@ function ShowAvgPoint(){
 
 
 //填写验证码
-function fillCaptcha()
+function FillCaptcha()
 {
-    //var img = $("[src='CheckCode.aspx']");
+    if(!default2.test(url)) return;
+    //var img = $("[src$='CheckCode.aspx']");
     var imgs = document.getElementsByTagName("img");
     var img = imgs[3];
-    if(img == null) {return;}
     img.onload = function(){
         var code = getCode(img);
         $("#TextBox3").val(code);
@@ -149,10 +152,55 @@ function getNum(imgData,x1,y1,x2,y2){
     }
 }
 
+//教学质量评价
+function AutoRank(){
+    if(!xsjxpj.test(url)) return;
+    var tds = $("td");
+    var td = tds[1];
+
+    var sels = $("select");
+    var save = $("#Button1");
+
+    //好的评价
+    var good = document.createElement("input");
+    good.value = "老师我爱你";
+    good.type = "button"; 
+    good.onclick = function(){
+        for(var i = 2; i< sels.length - 1; i++)
+            sels[i].selectedIndex = 1;
+        sels[1].selectedIndex = sels[sels.length - 1].selectedIndex = 2;
+        save.click();
+    }
+    
+    //坏的评价
+    var bad = document.createElement("input");
+    bad.value = "老师我恨你";
+    bad.type = "button";
+    bad.onclick = function(){
+        for(var i = 2; i< sels.length - 1; i++)
+            sels[i].selectedIndex = 5;
+        sels[1].selectedIndex = sels[sels.length - 1].selectedIndex = 4;
+        save.click();
+    }
+    
+    //随机评价
+    var random = document.createElement("input");
+    random.value = "老师祝你好运吧!";
+    random.type = "button";
+    random.onclick = function(){
+        for(var i = 1; i< sels.length; i++)
+            sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 5 + 1;
+        save.click();
+    }
+    td.appendChild(good);
+    td.appendChild(bad);
+    td.appendChild(random);
+}
 function init(){
     document.onmousedown = null;
     ShowAvgPoint();
-    fillCaptcha();
+    FillCaptcha();
+    AutoRank();
 }
 
 init();
