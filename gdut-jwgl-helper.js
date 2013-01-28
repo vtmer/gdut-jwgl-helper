@@ -64,7 +64,6 @@ function ShowAvgPoint(){
     lastrow.appendChild(td1);
     lastrow.appendChild(td2);
     tb.appendChild(lastrow);
-
 }
 
 
