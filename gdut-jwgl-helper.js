@@ -13,53 +13,51 @@ var xsjxpj = /.*xsjxpj.aspx.*/;
 var xscj = /.*xscj.aspx.*/;
 var default2 = /.*default2.aspx.*/;
 
-var helper = {
-    scores:[],
-    points:[], 
-    credits:[],
-    avgScore:0,
-    avgPoint:0,
-    sumPoint:0,
-    sumCredit:0,
-    total:0
-}
 
 //显示平均绩点和平均分
 function ShowAvgPoint(){
     if(!xscj.test(url)) return;
 
+    var scores = [];
+    var points = [];
+    var credits = [];
+    var avgScore = 0;
+    var avgPoint = 0
+    var sumPoint = 0;
+    var sumCredit = 0;
     var table = $("#DataGrid1");
     var rows = $('tr',table);
-
+    
     for(var i=1; i<rows.length; i++){
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
-        if(score == '优秀') helper.scores[i] = 95;
-        else if(score == '良好') helper.scores[i] = 85;
-        else if(score == '中等') helper.scores[i] = 75;
-        else if(score == '及格') helper.scores[i] = 65;
-        else if(score == '不及格') helper.scores[i] = 0;
-        else helper.scores[i] = score;
-        helper.points[i] = (helper.scores[i]-50)/10;
-        helper.credits[i] = parseFloat($(tds[7]).text().trim());
+        if(score == '优秀') scores[i] = 95;
+        else if(score == '良好') scores[i] = 85;
+        else if(score == '中等') scores[i] = 75;
+        else if(score == '及格') scores[i] = 65;
+        else if(score == '不及格') scores[i] = 0;
+        else scores[i] = score;
+        points[i] = (scores[i]-50)/10;
+        credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
-    for(var i=1; i<helper.scores.length; i++){
-        helper.avgScore += parseFloat(helper.scores[i]);
-        helper.sumPoint += helper.points[i] * helper.credits[i];
-        helper.sumCredit += helper.credits[i];
+    for(var i=1; i<scores.length; i++){
+        avgScore += parseFloat(scores[i]);
+        sumPoint += points[i] * credits[i];
+        sumCredit += credits[i];
     }
 
-    helper.avgScore /= helper.scores.length - 1;
-    helper.avgPoint = helper.sumPoint / helper.sumCredit;
+    avgScore /= scores.length - 1;
+    avgPoint = sumPoint / sumCredit;
+    if(avgScore == 0 ) return;
 
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
     var td1 = document.createElement('td');
-    td1.innerHTML = "平均绩点：" + helper.avgPoint;
+    td1.innerHTML = "平均绩点：" + avgPoint;
     td1.colSpan = "2";
     var td2 = document.createElement('td');
-    td2.innerHTML = "平均分：" + helper.avgScore;
+    td2.innerHTML = "平均分：" + avgScore;
     td2.colSpan = "2";
     lastrow.appendChild(td1);
     lastrow.appendChild(td2);
