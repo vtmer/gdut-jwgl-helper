@@ -69,13 +69,13 @@ function ShowAvgPoint(){
 function FillCaptcha()
 {
     if(!default2.test(url)) return;
-    //var img = $("[src$='CheckCode.aspx']");
     var imgs = document.getElementsByTagName("img");
     var img = imgs[3];
     img.onload = function(){
         var code = getCode(img);
-        $("#TextBox3").val(code);
+        document.getElementById("TextBox3").value = code;
     }
+    
 }
 
 function getCode(img){
