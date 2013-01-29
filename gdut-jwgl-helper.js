@@ -181,17 +181,49 @@ function AutoRank(){
     }
     
     //随机评价
-    var random = document.createElement("input");
-    random.value = "老师祝你好运吧!";
-    random.type = "button";
-    random.onclick = function(){
-        for(var i = 1; i< sels.length; i++)
-            sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 5 + 1;
+    //和谐版
+    var randomGood = document.createElement("input");
+    randomGood.value = "老师祝你好运吧!(和谐版)";
+    randomGood.type = "button";
+    randomGood.onclick = function(){
+	do{
+	    for(var i = 1; i< sels.length; i++)
+		 sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 1;
+	}while(isSame());
         save.click();
     }
+    //凶残版
+    var randomBad = document.createElement("input");
+    randomBad.value = "老师祝你好运吧!(凶残版)";
+    randomBad.type = "button";
+    randomBad.onclick = function(){
+	do{
+	     for(var i = 1; i< sels.length; i++)
+		 sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 3;
+	}while(isSame());
+        save.click();
+    }
+
+    //判断是否所有评价一样
+    function isSame(){
+	var n = sels.length - 1;
+	if(sels[n] == sels[n-1] && sels[n] == sels[n-2])
+	    return true;
+	else
+	    return false;
+    }
+    
+    //设置margin
+    good.style.margin = "5px";
+    bad.style.margin = "5px";
+    randomGood.style.margin = "5px";
+    randomBad.style.margin = "5px";
+
+    //添加到页面中
     td.appendChild(good);
     td.appendChild(bad);
-    td.appendChild(random);
+    td.appendChild(randomGood);
+    td.appendChild(randomBad);
 }
 function init(){
     document.onmousedown = null;
