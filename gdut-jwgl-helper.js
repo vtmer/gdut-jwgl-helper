@@ -4,6 +4,7 @@
 // @version    0.1
 // @description  hack
 // @match      http://jwgl.gdut.edu.cn/*
+// @include    http://jwgldx.gdut.edu.cn/*	
 // @copyright  2013, Link
 // @require http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js
 // ==/UserScript==
@@ -70,84 +71,44 @@ function FillCaptcha()
 {
     if(!default2.test(url)) return;
     var imgs = document.getElementsByTagName("img");
-    var img = imgs[3];
-    img.onload = function(){
-        var code = getCode(img);
-        document.getElementById("TextBox3").value = code;
-    }
-    
-}
-
-function getCode(img){
-    var code = "";
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(img,0,0);
-    var c = ctx.getImageData(0,0,img.width,img.height);
-    for(i=0; i<c.height; i++){
-        for(j=0; j<c.width; j++){
-            var x = (i*4)*c.width+(j*4); 
-            var r = c.data[x];
-            var g = c.data[x+1];
-            var b = c.data[x+2];
-            if(r+g+b > 350){
-                c.data[x] = c.data[x+1] = c.data[x+2] = 0;
-            }
-            else{
-                c.data[x] = c.data[x+1] = c.data[x+2] = 255;
-            }
-        }
-    }
-    for(var i=0;i<5;i++)
-    {
-        var x1 = i*9+5;
-        var x2 = i*9+13;
-        code += getNum(c,x1,5,x2,17);
-    }
-    return code;
-}
-
-
-function getNum(imgData,x1,y1,x2,y2){
-    var num = 0;
-    for(i=y1; i<y2; i++){
-        for(j=x1; j<x2; j++){
-            var x = (i*4)*imgData.width+(j*4);
-            if(imgData.data[x] == 255)num++;
-        }
-    }
-    switch(num)
-    {
-        case 56:{
-            j = (x1+x2)/2;
-            i = (y1+y2)/2;
-            var x = (i*4)*imgData.width+(j*4);
-            if(imgData.data[x] == 255)
-                return 8;
-            else
-                return 0;
-        }
-        case 30:return 1;
-        case 50:return 2;
-        case 51:return 3;
-        case 48:return 4;
-        case 57:return 5;
-        case 58:{
-            i = y2-2;
-            j = x1;
-            var x = (i*4)*imgData.width+(j*4);
-            if(imgData.data[x] == 255)
-                return 9;
-            else
-                return 6;
-        }
-        case 37:return 7;
-        default:return 0;
+    var image = imgs[3];
+    image.onload = function(){
+    	var canvas = document.createElement('canvas');                 
+	var ctx = canvas.getContext("2d");                 
+	var numbers = [
+		"110000111000000100011000001111000011110000111100001111000011110000111100000110001000000111000011",
+		"111100111110001111000011100100111011001111110011111100111111001111110011111100111111001111110011",
+		"110000111000000100011100001111001111110011111001111100011110001111000111100111110000000000000000",
+		"110000011000000000111100111111001110000111100001111110001111110000111100000110001000000111000011",
+		"111110011111000111110001111000011100100111001001100110010011100100000000000000001111100111111001",
+		"100000011000000110011111000111110000001100000001001110001111110000111100000110001000000111000011",
+		"110000011000000010011100001111110010001100000001000110000011110000111100100111001000000111000011",
+		"000000000000000011111001111100111111001111100111111001111110011111000111110011111100111111001111",
+		"110000111000000100111100001111000011110010000001100000010011110000111100001111001000000111000011",
+		"110000111000000100111001001111000011110000011000100000001100010011111100001110010000000110000011"
+		];
+	var captcha = "";                         //存放识别后的验证码
+	canvas.width = image.width;
+	canvas.height = image.height;
+	ctx.drawImage(image, 0, 0);
+	for (var i = 0; i < 5; i++) {
+   	var pixels = ctx.getImageData(9 * i + 5, 5, 8, 12).data;
+    	var ldString = "";
+    	for (var j = 0,length = pixels.length; j < length; j += 4) {
+       		ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
+    	}
+   	var comms = numbers.map(function (value) {                      //为了100%识别率,这里不能直接判断是否和模板字符串相等,因为可能有个别0被计算成1,或者相反
+       		return ldString.split("").filter(function (v, index) {
+       	     		return value[index] === v
+        	}).length
+  	});
+   	captcha += comms.indexOf(Math.max.apply(null, comms));          //添加到识别好的验证码中
+	}
+	document.querySelector("input[name=TextBox3]").value = captcha; //写入目标文本框
+	$("#Button1").click();
     }
 }
+
 
 //教学质量评价
 function AutoRank(){
