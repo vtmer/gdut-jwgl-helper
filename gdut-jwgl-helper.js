@@ -13,7 +13,76 @@ var url = document.URL.toString();
 var xsjxpj = /.*xsjxpj.aspx.*/;
 var xscj = /.*xscj.aspx.*/;
 var default2 = /.*default2.aspx.*/;
+var user = {
+    'name': '',
+    'password': '',
+    'is_autologin': '',
+    'login_time': ''
+};
 
+//获取用户信息
+function LoadSettings() {
+    user.name = localStorage['name'];
+    user.password = localStorage['password'];
+    user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
+    user.login_time = parseInt(localStorage['login_time'], 10) || 0;
+    
+    if (user.name && user.password) {
+        user.need_setup = false;
+    } else {
+        user.need_setup = true;
+    }
+}
+
+//显示配置信息
+function ShowSettings() {
+    if (default2.test(url)) {
+        // 登录页
+        $('.login_right dl').after(
+            '<input type="checkbox" name="auto_login" />' +
+            '<label for="auto_login">以后自动登录</label>'
+        );
+        if (user.is_autologin) {
+            $('input[name=auto_login]').attr({checked: 'checked'});
+        }
+
+        $('input#Button1').click(function() {
+            user.name = $('#TextBox1').val();
+            user.password = $('#TextBox2').val();
+            if ($('input[name="auto_login"]').is(':checked')) {
+                user.is_autologin = 1;
+            } else {
+                user.is_autologin = 0;
+            }
+            _save_user_settings();
+        });
+    } else {
+        // 登录后安全退出要取消自动登录
+        $('.info ul a#likTc').click(function() {
+            user.is_autologin = 0;
+            _save_user_settings();
+        });
+    }
+}
+
+//保存配置信息
+function _save_user_settings() {
+    for (prop in user) {
+        localStorage.setItem(prop, user[prop]);
+    }
+}
+
+function SaveSettings() {
+    var prop;
+
+    // 还在首页不做保存
+    if (default2.test(url))
+        return;
+
+    _save_user_settings();
+    // 成功登录，置零
+    localStorage.setItem('login_time', 0);
+}
 
 //显示平均绩点和平均分
 function ShowAvgPoint(){
@@ -23,7 +92,7 @@ function ShowAvgPoint(){
     var points = [];
     var credits = [];
     var avgScore = 0;
-    var avgPoint = 0
+    var avgPoint = 0;
     var sumPoint = 0;
     var sumCredit = 0;
     var table = $("#DataGrid1");
@@ -105,7 +174,15 @@ function FillCaptcha()
    	captcha += comms.indexOf(Math.max.apply(null, comms));          //添加到识别好的验证码中
 	}
 	document.querySelector("input[name=TextBox3]").value = captcha; //写入目标文本框
-	$("#Button1").click();
+        if (!user.need_setup) {
+            document.getElementById("TextBox1").value = user.name;
+            document.getElementById("TextBox2").value = user.password;
+
+            if (user.is_autologin) {
+                localStorage['login_time'] = user.login_time + 1;
+                document.getElementById("Button1").click();
+            }
+        }
     }
 }
 
@@ -186,11 +263,15 @@ function AutoRank(){
     td.appendChild(randomGood);
     td.appendChild(randomBad);
 }
+
 function init(){
     document.onmousedown = null;
-    ShowAvgPoint();
+    LoadSettings();
+    ShowSettings();
     FillCaptcha();
+    ShowAvgPoint();
     AutoRank();
+    SaveSettings();
 }
 
 init();
