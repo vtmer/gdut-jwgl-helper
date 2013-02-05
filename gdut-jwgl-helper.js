@@ -22,7 +22,7 @@ var user = {
 
 //获取用户信息
 function LoadSettings() {
-    user.name = localStorage ['name'];
+    user.name = localStorage['name'];
     user.password = localStorage['password'];
     user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
     user.login_time = parseInt(localStorage['login_time'], 10) || 0;
@@ -147,37 +147,37 @@ function FillCaptcha()
     var image = imgs[3];
     image.onload = function(){
         var canvas = document.createElement('canvas');                 
-    var ctx = canvas.getContext("2d");                 
-    var numbers = [
-      "110000111000000100011000001111000011110000111100001111000011110000111100000110001000000111000011",
-      "111100111110001111000011100100111011001111110011111100111111001111110011111100111111001111110011",
-      "110000111000000100011100001111001111110011111001111100011110001111000111100111110000000000000000",
-      "110000011000000000111100111111001110000111100001111110001111110000111100000110001000000111000011",
-      "111110011111000111110001111000011100100111001001100110010011100100000000000000001111100111111001",
-      "100000011000000110011111000111110000001100000001001110001111110000111100000110001000000111000011",
-      "110000011000000010011100001111110010001100000001000110000011110000111100100111001000000111000011",
-      "000000000000000011111001111100111111001111100111111001111110011111000111110011111100111111001111",
-      "110000111000000100111100001111000011110010000001100000010011110000111100001111001000000111000011",
-      "110000111000000100111001001111000011110000011000100000001100010011111100001110010000000110000011"
-    ];
-    var captcha = "";
-    canvas.width = image.width;
-    canvas.height = image.height;
-    ctx.drawImage(image, 0, 0);
-    for (var i = 0; i < 5; i++) {
-        var pixels = ctx.getImageData(9 * i + 5, 5, 8, 12).data;
-        var ldString = "";
-        for (var j = 0,length = pixels.length; j < length; j += 4) {
-            ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
+        var ctx = canvas.getContext("2d");                 
+        var numbers = [
+          "110000111000000100011000001111000011110000111100001111000011110000111100000110001000000111000011",
+          "111100111110001111000011100100111011001111110011111100111111001111110011111100111111001111110011",
+          "110000111000000100011100001111001111110011111001111100011110001111000111100111110000000000000000",
+          "110000011000000000111100111111001110000111100001111110001111110000111100000110001000000111000011",
+          "111110011111000111110001111000011100100111001001100110010011100100000000000000001111100111111001",
+          "100000011000000110011111000111110000001100000001001110001111110000111100000110001000000111000011",
+          "110000011000000010011100001111110010001100000001000110000011110000111100100111001000000111000011",
+          "000000000000000011111001111100111111001111100111111001111110011111000111110011111100111111001111",
+          "110000111000000100111100001111000011110010000001100000010011110000111100001111001000000111000011",
+          "110000111000000100111001001111000011110000011000100000001100010011111100001110010000000110000011"
+        ];
+        var captcha = "";
+        canvas.width = image.width;
+        canvas.height = image.height;
+        ctx.drawImage(image, 0, 0);
+        for (var i = 0; i < 5; i++) {
+            var pixels = ctx.getImageData(9 * i + 5, 5, 8, 12).data;
+            var ldString = "";
+            for (var j = 0,length = pixels.length; j < length; j += 4) {
+                ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
+            }    
+            var comms = numbers.map(function (value) {
+                return ldString.split("").filter(function (v, index) {
+                return value[index] === v;
+                }).length;
+            });
+            captcha += comms.indexOf(Math.max.apply(null, comms));
         }
-        var comms = numbers.map(function (value) {
-            return ldString.split("").filter(function (v, index) {
-            return value[index] === v;
-            }).length;
-        });
-        captcha += comms.indexOf(Math.max.apply(null, comms));
-    }
-    document.querySelector("input[name=TextBox3]").value = captcha;
+        document.querySelector("input[name=TextBox3]").value = captcha;
         if (!user.need_setup) {
             document.getElementById("TextBox1").value = user.name;
             document.getElementById("TextBox2").value = user.password;
