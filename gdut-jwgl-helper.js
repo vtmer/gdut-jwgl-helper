@@ -2,10 +2,10 @@
 // @name       GDUT 教务管理系统 helper
 // @namespace  http://use.i.E.your.homepage/
 // @version    0.1
-// @description  hack
+// @description	better experience on gdut jwgl system
 // @match      http://jwgl.gdut.edu.cn/*
 // @include    http://jwgldx.gdut.edu.cn/*	
-// @copyright  2013, Link
+// @copyright  2013, VTM STUDIO
 // @require http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js
 // ==/UserScript==
 
@@ -26,8 +26,8 @@ function LoadSettings() {
     user.password = localStorage['password'];
     user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
     user.login_time = parseInt(localStorage['login_time'], 10) || 0;
-    
-    if (user.name && user.password) {
+    // 如果登录次数为0，即使name和password是有的，也说明之前没成功登录
+    if (user.name && user.password && user.login_time > 0) {
         user.need_setup = false;
     } else {
         user.need_setup = true;
@@ -60,6 +60,7 @@ function ShowSettings() {
         // 登录后安全退出要取消自动登录
         $('.info ul a#likTc').click(function() {
             user.is_autologin = 0;
+            user.login_time = 0;
             _save_user_settings();
         });
     }
@@ -81,12 +82,15 @@ function SaveSettings() {
 
     _save_user_settings();
     // 成功登录，置零
-    localStorage.setItem('login_time', 0);
+    // 為什麼成功登录要置零？
+    // localStorage.setItem('login_time', 0);
+    localStorage.login_time++;
 }
 
 //显示平均绩点和平均分
 function ShowAvgPoint(){
-    if(!xscj.test(url)) return;
+    if (!xscj.test(url))
+	return;
 
     var scores = [];
     var points = [];
@@ -98,7 +102,7 @@ function ShowAvgPoint(){
     var table = $("#DataGrid1");
     var rows = $('tr',table);
     
-    for(var i=1; i<rows.length; i++){
+    for (var i=1; i<rows.length; i++){
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
         if(score == '优秀') scores[i] = 95;
@@ -111,7 +115,7 @@ function ShowAvgPoint(){
         credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
-    for(var i=1; i<scores.length; i++){
+    for (var i=1; i<scores.length; i++){
         avgScore += parseFloat(scores[i]);
         sumPoint += points[i] * credits[i];
         sumCredit += credits[i];
@@ -119,7 +123,7 @@ function ShowAvgPoint(){
 
     avgScore /= scores.length - 1;
     avgPoint = sumPoint / sumCredit;
-    if(avgScore == 0 ) return;
+    if (avgScore == 0 ) return;
 
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
@@ -138,48 +142,47 @@ function ShowAvgPoint(){
 //填写验证码
 function FillCaptcha()
 {
-    if(!default2.test(url)) return;
+    if (!default2.test(url)) return;
     var imgs = document.getElementsByTagName("img");
     var image = imgs[3];
     image.onload = function(){
     	var canvas = document.createElement('canvas');                 
-	var ctx = canvas.getContext("2d");                 
-	var numbers = [
-	  "110000111000000100011000001111000011110000111100001111000011110000111100000110001000000111000011",
-	  "111100111110001111000011100100111011001111110011111100111111001111110011111100111111001111110011",
-	  "110000111000000100011100001111001111110011111001111100011110001111000111100111110000000000000000",
-	  "110000011000000000111100111111001110000111100001111110001111110000111100000110001000000111000011",
-	  "111110011111000111110001111000011100100111001001100110010011100100000000000000001111100111111001",
-	  "100000011000000110011111000111110000001100000001001110001111110000111100000110001000000111000011",
-	  "110000011000000010011100001111110010001100000001000110000011110000111100100111001000000111000011",
-	  "000000000000000011111001111100111111001111100111111001111110011111000111110011111100111111001111",
-	  "110000111000000100111100001111000011110010000001100000010011110000111100001111001000000111000011",
-	  "110000111000000100111001001111000011110000011000100000001100010011111100001110010000000110000011"
-	];
-	var captcha = "";                         //存放识别后的验证码
-	canvas.width = image.width;
-	canvas.height = image.height;
-	ctx.drawImage(image, 0, 0);
-	for (var i = 0; i < 5; i++) {
-	    var pixels = ctx.getImageData(9 * i + 5, 5, 8, 12).data;
-	    var ldString = "";
-	    for (var j = 0,length = pixels.length; j < length; j += 4) {
-       		ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
-	    }
-	    var comms = numbers.map(function (value) {
-       		return ldString.split("").filter(function (v, index) {
-		    return value[index] === v
-        	}).length
-	    });
-	    captcha += comms.indexOf(Math.max.apply(null, comms));          //添加到识别好的验证码中
-	}
-	document.querySelector("input[name=TextBox3]").value = captcha; //写入目标文本框
+    var ctx = canvas.getContext("2d");                 
+    var numbers = [
+      "110000111000000100011000001111000011110000111100001111000011110000111100000110001000000111000011",
+      "111100111110001111000011100100111011001111110011111100111111001111110011111100111111001111110011",
+      "110000111000000100011100001111001111110011111001111100011110001111000111100111110000000000000000",
+      "110000011000000000111100111111001110000111100001111110001111110000111100000110001000000111000011",
+      "111110011111000111110001111000011100100111001001100110010011100100000000000000001111100111111001",
+      "100000011000000110011111000111110000001100000001001110001111110000111100000110001000000111000011",
+      "110000011000000010011100001111110010001100000001000110000011110000111100100111001000000111000011",
+      "000000000000000011111001111100111111001111100111111001111110011111000111110011111100111111001111",
+      "110000111000000100111100001111000011110010000001100000010011110000111100001111001000000111000011",
+      "110000111000000100111001001111000011110000011000100000001100010011111100001110010000000110000011"
+    ];
+    var captcha = "";
+    canvas.width = image.width;
+    canvas.height = image.height;
+    ctx.drawImage(image, 0, 0);
+    for (var i = 0; i < 5; i++) {
+        var pixels = ctx.getImageData(9 * i + 5, 5, 8, 12).data;
+        var ldString = "";
+        for (var j = 0,length = pixels.length; j < length; j += 4) {
+       	    ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
+        }
+        var comms = numbers.map(function (value) {
+       	    return ldString.split("").filter(function (v, index) {
+            return value[index] === v
+            }).length
+        });
+        captcha += comms.indexOf(Math.max.apply(null, comms));
+    }
+    document.querySelector("input[name=TextBox3]").value = captcha;
         if (!user.need_setup) {
             document.getElementById("TextBox1").value = user.name;
             document.getElementById("TextBox2").value = user.password;
 
             if (user.is_autologin) {
-                localStorage['login_time'] = user.login_time + 1;
                 document.getElementById("Button1").click();
             }
         }
@@ -189,7 +192,7 @@ function FillCaptcha()
 
 //教学质量评价
 function AutoRank(){
-    if(!xsjxpj.test(url)) return;
+    if (!xsjxpj.test(url)) return;
     var tds = $("td");
     var td = tds[1];
 
@@ -201,7 +204,7 @@ function AutoRank(){
     good.value = "老师我爱你";
     good.type = "button"; 
     good.onclick = function(){
-        for(var i = 2; i< sels.length - 1; i++)
+        for (var i = 2; i< sels.length - 1; i++)
             sels[i].selectedIndex = 1;
         sels[1].selectedIndex = sels[sels.length - 1].selectedIndex = 2;
         save.click();
@@ -212,7 +215,7 @@ function AutoRank(){
     bad.value = "老师我恨你";
     bad.type = "button";
     bad.onclick = function(){
-        for(var i = 2; i< sels.length - 1; i++)
+        for (var i = 2; i< sels.length - 1; i++)
             sels[i].selectedIndex = 5;
         sels[1].selectedIndex = sels[sels.length - 1].selectedIndex = 4;
         save.click();
@@ -225,7 +228,7 @@ function AutoRank(){
     randomGood.type = "button";
     randomGood.onclick = function(){
 	do{
-	    for(var i = 1; i< sels.length; i++)
+	    for (var i = 1; i< sels.length; i++)
 		 sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 1;
 	} while (isSame());
         save.click();
@@ -236,7 +239,7 @@ function AutoRank(){
     randomBad.type = "button";
     randomBad.onclick = function(){
 	do{
-	     for(var i = 1; i< sels.length; i++)
+	     for (var i = 1; i< sels.length; i++)
 		 sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 3;
 	} while (isSame());
         save.click();
@@ -244,12 +247,12 @@ function AutoRank(){
 
     //判断是否所有评价一样
     function isSame(){
-	var n = sels.length - 1;
-	if(sels[n] == sels[n-1] && sels[n] == sels[n-2]){
-	    return true;
-	} else {
-	    return false;
-	}
+	    var n = sels.length - 1;
+    	if (sels[n] == sels[n-1] && sels[n] == sels[n-2]){
+    	    return true;
+    	} else {
+            return false;
+    	}
     }
     
     //设置margin
