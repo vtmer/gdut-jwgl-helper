@@ -22,7 +22,7 @@ var user = {
 
 //获取用户信息
 function LoadSettings() {
-    user.name = localStorage['name'];
+    user.name = localStorage ['name'];
     user.password = localStorage['password'];
     user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
     user.login_time = parseInt(localStorage['login_time'], 10) || 0;
@@ -123,7 +123,7 @@ function ShowAvgPoint(){
 
     avgScore /= scores.length - 1;
     avgPoint = sumPoint / sumCredit;
-    if (avgScore == 0 ) return;
+    if (avgScore === 0 ) return;
 
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
@@ -146,7 +146,7 @@ function FillCaptcha()
     var imgs = document.getElementsByTagName("img");
     var image = imgs[3];
     image.onload = function(){
-    	var canvas = document.createElement('canvas');                 
+        var canvas = document.createElement('canvas');                 
     var ctx = canvas.getContext("2d");                 
     var numbers = [
       "110000111000000100011000001111000011110000111100001111000011110000111100000110001000000111000011",
@@ -168,12 +168,12 @@ function FillCaptcha()
         var pixels = ctx.getImageData(9 * i + 5, 5, 8, 12).data;
         var ldString = "";
         for (var j = 0,length = pixels.length; j < length; j += 4) {
-       	    ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
+            ldString = ldString + (+(pixels[j] * 0.3 + pixels[j + 1] * 0.59 + pixels[j + 2] * 0.11 >= 140));
         }
         var comms = numbers.map(function (value) {
-       	    return ldString.split("").filter(function (v, index) {
-            return value[index] === v
-            }).length
+            return ldString.split("").filter(function (v, index) {
+            return value[index] === v;
+            }).length;
         });
         captcha += comms.indexOf(Math.max.apply(null, comms));
     }
@@ -186,7 +186,7 @@ function FillCaptcha()
                 document.getElementById("Button1").click();
             }
         }
-    }
+    };
 }
 
 
@@ -208,7 +208,7 @@ function AutoRank(){
             sels[i].selectedIndex = 1;
         sels[1].selectedIndex = sels[sels.length - 1].selectedIndex = 2;
         save.click();
-    }
+    };
     
     //坏的评价
     var bad = document.createElement("input");
@@ -219,7 +219,7 @@ function AutoRank(){
             sels[i].selectedIndex = 5;
         sels[1].selectedIndex = sels[sels.length - 1].selectedIndex = 4;
         save.click();
-    }
+    };
     
     //随机评价
     //和谐版
@@ -228,31 +228,31 @@ function AutoRank(){
     randomGood.type = "button";
     randomGood.onclick = function(){
 	do{
-	    for (var i = 1; i< sels.length; i++)
-		 sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 1;
+        for (var i = 1; i< sels.length; i++)
+         sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 1;
 	} while (isSame());
         save.click();
-    }
+    };
     //凶残版
     var randomBad = document.createElement("input");
     randomBad.value = "老师祝你好运吧!(凶残版)";
     randomBad.type = "button";
     randomBad.onclick = function(){
 	do{
-	     for (var i = 1; i< sels.length; i++)
-		 sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 3;
+         for (var i = 1; i< sels.length; i++)
+         sels[i].selectedIndex = Math.ceil(Math.random() * 10) % 3 + 3;
 	} while (isSame());
         save.click();
-    }
+    };
 
     //判断是否所有评价一样
     function isSame(){
-	    var n = sels.length - 1;
-    	if (sels[n] == sels[n-1] && sels[n] == sels[n-2]){
-    	    return true;
-    	} else {
+        var n = sels.length - 1;
+        if (sels[n] == sels[n-1] && sels[n] == sels[n-2]){
+            return true;
+        } else {
             return false;
-    	}
+        }
     }
     
     //设置margin
