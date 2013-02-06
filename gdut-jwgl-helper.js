@@ -12,7 +12,7 @@
 var url = document.URL.toString();
 var xsjxpj = /.*xsjxpj.aspx.*/;
 var xscj = /.*xscj.aspx.*/;
-var default2 = /.*default2.aspx.*/i;
+var default2 = /(.*default2.aspx.*)?/i;
 var user = {
     'name': '',
     'password': '',
