@@ -13,6 +13,8 @@ var url = document.URL.toString();
 var xsjxpj = /.*xsjxpj.aspx.*/;
 var xscj = /.*xscj.aspx.*/;
 var default2 = /.*default2.aspx.*/i;
+var error = /.*zdy.htm.*/;
+var loginPage = "http://jwgl.gdut.edu.cn";
 var user = {
     'name': '',
     'password': '',
@@ -26,8 +28,9 @@ function LoadSettings() {
     user.password = localStorage['password'];
     user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
     user.login_time = parseInt(localStorage['login_time'], 10) || 0;
-    // 如果登录次数为0，即使name和password是有的，也说明之前没成功登录
-    if (user.name && user.password && user.login_time > 0) {
+    user.login_successed = parseInt(localStorage['login_successed'], 10) || 0;
+    // 之前必须登录成功过
+    if (user.name && user.password && user.login_successed !== 0) {
         user.need_setup = false;
     } else {
         user.need_setup = true;
@@ -60,7 +63,7 @@ function ShowSettings() {
         // 登录后安全退出要取消自动登录
         $('.info ul a#likTc').click(function() {
             user.is_autologin = 0;
-            user.login_time = 0;
+            user.login_successed = 0;
             _save_user_settings();
         });
     }
@@ -81,10 +84,9 @@ function SaveSettings() {
         return;
 
     _save_user_settings();
-    // 成功登录，置零
-    // 為什麼成功登录要置零？
-    // localStorage.setItem('login_time', 0);
-    localStorage.login_time++;
+    // 成功登录，登录次数置零
+    localStorage.setItem('login_time', 0);
+    localStorage.setItem('login_successed', 1);
 }
 
 //显示平均绩点和平均分
@@ -248,7 +250,7 @@ function AutoRank(){
     //判断是否所有评价一样
     function isSame(){
         var n = sels.length - 1;
-        if (sels[n] == sels[n-1] && sels[n] == sels[n-2]){
+        if (sels[n] == sels[n-1] && sels[n] == sels[n-2]) {
             return true;
         } else {
             return false;
@@ -269,6 +271,9 @@ function AutoRank(){
 }
 
 function init(){
+    if (error.test(url)) {
+        location.href = loginPage;
+    }
     document.onmousedown = null;
     LoadSettings();
     ShowSettings();
