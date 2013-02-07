@@ -10,11 +10,11 @@
 // ==/UserScript==
 
 var url = document.URL.toString();
+var loginPage = "http://jwgl.gdut.edu.cn";
 var xsjxpj = /.*xsjxpj.aspx.*/;
 var xscj = /.*xscj.aspx.*/;
-var default2 = /.*default2.aspx.*/i;
+var default2 = /(.*default2.aspx.*)?/i;
 var error = /.*zdy.htm.*/;
-var loginPage = "http://jwgl.gdut.edu.cn";
 var user = {
     'name': '',
     'password': '',
