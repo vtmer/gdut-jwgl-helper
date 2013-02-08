@@ -152,7 +152,7 @@ function FillCaptcha()
     if (!default2.test(url)) return;
     var imgs = document.getElementsByTagName("img");
     var image = imgs[3];
-    image.onload = function(){
+    $(image).ready(function(){
         var canvas = document.createElement('canvas');                 
         var ctx = canvas.getContext("2d");                 
         var numbers = [
@@ -193,7 +193,7 @@ function FillCaptcha()
                 document.getElementById("Button1").click();
             }
         }
-    };
+    });
 }
 
 
