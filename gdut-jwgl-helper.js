@@ -11,26 +11,31 @@
 
 var url = document.URL.toString();
 var loginPage = "http://jwgl.gdut.edu.cn";
-var xsjxpj = /.*xsjxpj.aspx.*/;
-var xscj = /.*xscj.aspx.*/;
-var default2 = /(.*default2.aspx.*)?/i;
-var error = /.*zdy.htm.*/;
+var xsjxpj = /.*xsjxpj\.aspx.*/;
+var xscj = /.*xscj\.aspx.*/;
+var default2 = /.*default2\.aspx.*/i;
+var error = /.*zdy\.htm.*/;
 var user = {
     'name': '',
     'password': '',
     'is_autologin': '',
-    'login_time': ''
+    // 记录连续登录次数
+    'login_time': '',
+    // 上次登录是否成功
+    'login_successed': '',
+    // 是否需要重新输入用户信息
+    'need_setup': ''
 };
 
 //获取用户信息
 function LoadSettings() {
-    user.name = localStorage['name'];
-    user.password = localStorage['password'];
-    user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
-    user.login_time = parseInt(localStorage['login_time'], 10) || 0;
-    user.login_successed = parseInt(localStorage['login_successed'], 10) || 0;
+    user.name = localStorage.name;
+    user.password = localStorage.password;
+    user.is_autologin = parseInt(localStorage.is_autologin, 10) || 0;
+    user.login_time = parseInt(localStorage.login_time, 10) || 0;
+    user.login_successed = parseInt(localStorage.login_successed, 10) || 0;
     // 之前必须登录成功过
-    if (user.name && user.password && user.login_successed !== 0) {
+    if (user.name && user.password && user.login_successed) {
         user.need_setup = false;
     } else {
         user.need_setup = true;
@@ -69,24 +74,23 @@ function ShowSettings() {
     }
 }
 
-//保存配置信息
+//保存配置信息到 localStorage
 function _save_user_settings() {
+    var prop;
     for (prop in user) {
         localStorage.setItem(prop, user[prop]);
     }
 }
 
 function SaveSettings() {
-    var prop;
-
     // 还在首页不做保存
     if (default2.test(url))
         return;
 
-    _save_user_settings();
     // 成功登录，登录次数置零
-    localStorage.setItem('login_time', 0);
-    localStorage.setItem('login_successed', 1);
+    user.login_time = 0;
+    user.login_successed = 1;
+    _save_user_settings();
 }
 
 //显示平均绩点和平均分
@@ -103,8 +107,9 @@ function ShowAvgPoint(){
     var sumCredit = 0;
     var table = $("#DataGrid1");
     var rows = $('tr',table);
-    
-    for (var i=1; i<rows.length; i++){
+    var i;
+
+    for (i=1; i<rows.length; i++){
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
         if(score == '优秀') scores[i] = 95;
@@ -117,7 +122,7 @@ function ShowAvgPoint(){
         credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
-    for (var i=1; i<scores.length; i++){
+    for (i=1; i<scores.length; i++){
         avgScore += parseFloat(scores[i]);
         sumPoint += points[i] * credits[i];
         sumCredit += credits[i];
@@ -147,7 +152,7 @@ function FillCaptcha()
     if (!default2.test(url)) return;
     var imgs = document.getElementsByTagName("img");
     var image = imgs[3];
-    image.onload = function(){
+    $(image).load(function(){
         var canvas = document.createElement('canvas');                 
         var ctx = canvas.getContext("2d");                 
         var numbers = [
@@ -188,7 +193,7 @@ function FillCaptcha()
                 document.getElementById("Button1").click();
             }
         }
-    };
+    });
 }
 
 
@@ -270,11 +275,15 @@ function AutoRank(){
     td.appendChild(randomBad);
 }
 
-function init(){
+function ErrorPage() {
     if (error.test(url)) {
         location.href = loginPage;
     }
+}
+
+function init() {
     document.onmousedown = null;
+    ErrorPage();
     LoadSettings();
     ShowSettings();
     FillCaptcha();
