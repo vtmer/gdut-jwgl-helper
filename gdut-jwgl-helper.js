@@ -74,24 +74,23 @@ function ShowSettings() {
     }
 }
 
-//保存配置信息
+//保存配置信息到 localStorage
 function _save_user_settings() {
+    var prop;
     for (prop in user) {
         localStorage.setItem(prop, user[prop]);
     }
 }
 
 function SaveSettings() {
-    var prop;
-
     // 还在首页不做保存
     if (default2.test(url))
         return;
 
-    _save_user_settings();
     // 成功登录，登录次数置零
-    localStorage.setItem('login_time', 0);
-    localStorage.setItem('login_successed', 1);
+    user.login_time = 0;
+    user.login_successed = 1;
+    _save_user_settings();
 }
 
 //显示平均绩点和平均分
