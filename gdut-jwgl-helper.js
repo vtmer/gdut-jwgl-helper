@@ -107,8 +107,9 @@ function ShowAvgPoint(){
     var sumCredit = 0;
     var table = $("#DataGrid1");
     var rows = $('tr',table);
-    
-    for (var i=1; i<rows.length; i++){
+    var i;
+
+    for (i=1; i<rows.length; i++){
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
         if(score == '优秀') scores[i] = 95;
@@ -121,7 +122,7 @@ function ShowAvgPoint(){
         credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
-    for (var i=1; i<scores.length; i++){
+    for (i=1; i<scores.length; i++){
         avgScore += parseFloat(scores[i]);
         sumPoint += points[i] * credits[i];
         sumCredit += credits[i];
