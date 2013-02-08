@@ -275,11 +275,15 @@ function AutoRank(){
     td.appendChild(randomBad);
 }
 
-function init(){
+function ErrorPage() {
     if (error.test(url)) {
         location.href = loginPage;
     }
+}
+
+function init() {
     document.onmousedown = null;
+    ErrorPage();
     LoadSettings();
     ShowSettings();
     FillCaptcha();
