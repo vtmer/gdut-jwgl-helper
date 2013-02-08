@@ -11,26 +11,31 @@
 
 var url = document.URL.toString();
 var loginPage = "http://jwgl.gdut.edu.cn";
-var xsjxpj = /.*xsjxpj.aspx.*/;
-var xscj = /.*xscj.aspx.*/;
-var default2 = /(.*default2.aspx.*)?/i;
-var error = /.*zdy.htm.*/;
+var xsjxpj = /.*xsjxpj\.aspx.*/;
+var xscj = /.*xscj\.aspx.*/;
+var default2 = /.*default2\.aspx.*/i;
+var error = /.*zdy\.htm.*/;
 var user = {
     'name': '',
     'password': '',
     'is_autologin': '',
-    'login_time': ''
+    // 记录连续登录次数
+    'login_time': '',
+    // 上次登录是否成功
+    'login_successed': '',
+    // 是否需要重新输入用户信息
+    'need_setup': ''
 };
 
 //获取用户信息
 function LoadSettings() {
-    user.name = localStorage['name'];
-    user.password = localStorage['password'];
-    user.is_autologin = parseInt(localStorage['is_autologin'], 10) || 0;
-    user.login_time = parseInt(localStorage['login_time'], 10) || 0;
-    user.login_successed = parseInt(localStorage['login_successed'], 10) || 0;
+    user.name = localStorage.name;
+    user.password = localStorage.password;
+    user.is_autologin = parseInt(localStorage.is_autologin, 10) || 0;
+    user.login_time = parseInt(localStorage.login_time, 10) || 0;
+    user.login_successed = parseInt(localStorage.login_successed, 10) || 0;
     // 之前必须登录成功过
-    if (user.name && user.password && user.login_successed !== 0) {
+    if (user.name && user.password && user.login_successed) {
         user.need_setup = false;
     } else {
         user.need_setup = true;
