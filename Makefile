@@ -3,7 +3,8 @@
 name=gdut-jwgl-helper
 extension_src_path=ext
 converter=gm2chrome/converter.py
-chrome=`which google-chrome`
+# get the chrome in your machine
+chrome=`ls /usr/bin | grep 'chrom' | head -1`
 
 convert:
 	python ${converter} ${name}.js
