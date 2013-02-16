@@ -1,0 +1,3 @@
+[submodule "gm2chrome"]
+	path = gm2chrome
+	url = git@github.com:bcho/gm2chrome.git
