@@ -120,8 +120,7 @@ function ShowAvgPoint(){
         else scores[i] = score;
         if ((scores[i] - 50) >= 10) {
             points[i] = (scores[i] - 50) / 10; 
-        }
-        else {
+        } else {
             points[i] = 0;
         }
         credits[i] = parseFloat($(tds[7]).text().trim());
