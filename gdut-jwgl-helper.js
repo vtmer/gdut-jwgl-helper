@@ -118,9 +118,12 @@ function ShowAvgPoint(){
         else if(score == '及格') scores[i] = 65;
         else if(score == '不及格') scores[i] = 0;
         else scores[i] = score;
-        if((scores[i]-50)>=10)
-        points[i] = (scores[i]-50)/10;
-        else points[i] = 0;
+        if ((scores[i] - 50) >= 10) {
+            points[i] = (scores[i] - 50) / 10; 
+        }
+        else {
+            points[i] = 0;
+        }
         credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
