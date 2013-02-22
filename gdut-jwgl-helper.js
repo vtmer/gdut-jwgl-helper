@@ -4,7 +4,7 @@
 // @version    0.1
 // @description	better experience on gdut jwgl system
 // @match      http://jwgl.gdut.edu.cn/*
-// @include    http://jwgldx.gdut.edu.cn/*	
+// @match    http://jwgldx.gdut.edu.cn/*	
 // @copyright  2013, VTM STUDIO
 // @require http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js
 // ==/UserScript==
