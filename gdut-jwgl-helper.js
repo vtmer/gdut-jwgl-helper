@@ -112,12 +112,18 @@ function ShowAvgPoint(){
     for (i=1; i<rows.length; i++){
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
-        if(score == '优秀') scores[i] = 95;
-        else if(score == '良好') scores[i] = 85;
-        else if(score == '中等') scores[i] = 75;
-        else if(score == '及格') scores[i] = 65;
-        else if(score == '不及格') scores[i] = 0;
-        else scores[i] = score;
+        if (score == '优秀') scores[i] = 95;
+        else if (score == '良好') scores[i] = 85;
+        else if (score == '中等') scores[i] = 75;
+        else if (score == '及格') scores[i] = 65;
+        else if (score == '不及格') scores[i] = 0;
+        else if (!isNaN(parseInt(score, 10))) scores[i] = score;
+        /**
+         * TODO GPA NaN
+         * 有时候会出现“免修”，那么这个时候绩点怎么算？
+         */
+        else continue;
+
         if ((scores[i] - 50) >= 10) {
             points[i] = (scores[i] - 50) / 10; 
         } else {
@@ -126,10 +132,12 @@ function ShowAvgPoint(){
         credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
-    for (i=1; i<scores.length; i++){
-        avgScore += parseFloat(scores[i]);
-        sumPoint += points[i] * credits[i];
-        sumCredit += credits[i];
+    for (i=1; i<scores.length; i++) {
+        if (scores[i] && points[i] && credits[i]) {
+            avgScore += parseFloat(scores[i]);
+            sumPoint += points[i] * credits[i];
+            sumCredit += credits[i];
+        }
     }
 
     avgScore /= scores.length - 1;
@@ -139,10 +147,10 @@ function ShowAvgPoint(){
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
     var td1 = document.createElement('td');
-    td1.innerHTML = "平均绩点：" + avgPoint;
+    td1.innerHTML = "平均绩点：" + avgPoint.toFixed(2);
     td1.colSpan = "2";
     var td2 = document.createElement('td');
-    td2.innerHTML = "平均分：" + avgScore;
+    td2.innerHTML = "平均分：" + avgScore.toFixed(2);
     td2.colSpan = "2";
     lastrow.appendChild(td1);
     lastrow.appendChild(td2);

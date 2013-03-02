@@ -12,7 +12,7 @@ convert:
 zipit:
 	zip ${name}.zip ${extension_src_path}/*
 
-packit:
+packit: convert
 	if [ -a ${name}.pem ]; \
 	then \
 	    ${chrome} --pack-extension=${extension_src_path} --pack-extension-key=${name}.pem; \
