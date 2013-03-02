@@ -147,10 +147,10 @@ function ShowAvgPoint(){
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
     var td1 = document.createElement('td');
-    td1.innerHTML = "平均绩点：" + avgPoint;
+    td1.innerHTML = "平均绩点：" + avgPoint.toFixed(2);
     td1.colSpan = "2";
     var td2 = document.createElement('td');
-    td2.innerHTML = "平均分：" + avgScore;
+    td2.innerHTML = "平均分：" + avgScore.toFixed(2);
     td2.colSpan = "2";
     lastrow.appendChild(td1);
     lastrow.appendChild(td2);
