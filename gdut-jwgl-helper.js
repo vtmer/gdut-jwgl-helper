@@ -133,11 +133,9 @@ function ShowAvgPoint(){
     }
 
     for (i=1; i<scores.length; i++) {
-        if (scores[i] && points[i] && credits[i]) {
-            avgScore += parseFloat(scores[i]);
-            sumPoint += points[i] * credits[i];
-            sumCredit += credits[i];
-        }
+        avgScore += parseFloat(scores[i]);
+        sumPoint += points[i] * credits[i];
+        sumCredit += credits[i];
     }
 
     avgScore /= scores.length - 1;
@@ -295,13 +293,13 @@ function ErrorPage() {
 
 function init() {
     document.onmousedown = null;
-    ErrorPage();
-    LoadSettings();
-    ShowSettings();
-    FillCaptcha();
+    //ErrorPage();
+    //LoadSettings();
+    //ShowSettings();
+    //FillCaptcha();
     ShowAvgPoint();
     AutoRank();
-    SaveSettings();
+    //SaveSettings();
 }
 
 init();
