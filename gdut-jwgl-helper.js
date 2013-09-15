@@ -94,22 +94,21 @@ function SaveSettings() {
 }
 
 //显示平均绩点和平均分
-function ShowAvgPoint(){
+function ShowAvgGPA(){
     if (!xscj.test(url))
 	return;
 
     var scores = [];
-    var points = [];
+    var GPA = [];
     var credits = [];
     var avgScore = 0;
-    var avgPoint = 0;
-    var sumPoint = 0;
+    var avgGPA = 0;
+    var sumGPA = 0;
     var sumCredit = 0;
     var table = $("#DataGrid1");
     var rows = $('tr',table);
-    var i;
 
-    for (i=1; i<rows.length; i++){
+    for (var i = 1, length = rows.length; i < length; i++) {
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
         if (score == '优秀') scores[i] = 95;
@@ -125,27 +124,27 @@ function ShowAvgPoint(){
         else continue;
 
         if ((scores[i] - 50) >= 10) {
-            points[i] = (scores[i] - 50) / 10; 
+            GPA[i] = (scores[i] - 50) / 10; 
         } else {
-            points[i] = 0;
+            GPA[i] = 0;
         }
         credits[i] = parseFloat($(tds[7]).text().trim());
     }
 
-    for (i=1; i<scores.length; i++) {
+    for (var i = 1, length = scores.length; i<length; i++) {
         avgScore += parseFloat(scores[i]);
-        sumPoint += points[i] * credits[i];
+        sumGPA += GPA[i] * credits[i];
         sumCredit += credits[i];
     }
 
     avgScore /= scores.length - 1;
-    avgPoint = sumPoint / sumCredit;
+    avgGPA = sumGPA / sumCredit;
     if (avgScore === 0 ) return;
 
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
     var td1 = document.createElement('td');
-    td1.innerHTML = "平均绩点：" + avgPoint.toFixed(2);
+    td1.innerHTML = "平均绩点：" + avgGPA.toFixed(2);
     td1.colSpan = "2";
     var td2 = document.createElement('td');
     td2.innerHTML = "平均分：" + avgScore.toFixed(2);
@@ -297,7 +296,7 @@ function init() {
     //LoadSettings();
     //ShowSettings();
     //FillCaptcha();
-    ShowAvgPoint();
+    ShowAvgGPA();
     AutoRank();
     //SaveSettings();
 }
