@@ -5,9 +5,10 @@ extension_src_path=ext
 converter=gm2chrome/converter.py
 # get the chrome in your machine
 chrome=`ls /usr/bin | grep 'chrom' | head -1`
+python=`which python2`
 
 convert:
-	python ${converter} ${name}.js
+	${python} ${converter} ${name}.js
 
 zipit:
 	zip ${name}.zip ${extension_src_path}/*
