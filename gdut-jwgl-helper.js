@@ -93,21 +93,64 @@ function SaveSettings() {//{{{
     _save_user_settings();
 }//}}}
 
-//显示平均绩点和平均分
-function ShowAvgGPA() {//{{{
-    if (!xscj.test(url))
-	return;
+var GPA = {//{{{
+    scores: [],
+    GPA: [],
+    credits: [],
+    avgScore: 0,
+    avgGPA: 0,
+    sumGPA: 0,
+    sumCredit: 0
+};//}}}
 
-    var scores = [];
-    var GPA = [];
-    var credits = [];
+// 初始化
+GPA.init = function() {//{{{
+    if (!xscj.test(url))
+        return;
+    this.table = $("#DataGrid1");
+    this.rows = $('tr',this.table);
+
+    var tb = $('tbody')[0];
+    var lastrow = document.createElement('tr');
+
+    var td1 = document.createElement('td');
+    td1.colSpan = "2";
+    td1.id = "avgGPA";
+
+    var td2 = document.createElement('td');
+    td2.colSpan = "2";
+    td2.id = "avgScore";
+
+    this.Calculate();
+
+    this.td1 = td1;
+    this.td2 = td2;
+
+    lastrow.appendChild(td1);
+    lastrow.appendChild(td2);
+    tb.appendChild(lastrow);
+
+    this.Show();
+};//}}}
+
+// 显示平均绩点和平均分
+GPA.Show = function() {//{{{
+    this.td1.innerHTML = "平均绩点：" + this.avgGPA.toFixed(2);
+    this.td2.innerHTML = "平均分：" + this.avgScore.toFixed(2);
+};//}}}
+
+// 计算平均绩点和平均分
+GPA.Calculate = function() {//{{{
+    var rows = this.rows;
+    var scores = this.scores;
+    var GPA = this.GPA;
+    var credits = this.credits;
     var avgScore = 0;
     var avgGPA = 0;
     var sumGPA = 0;
     var sumCredit = 0;
-    var table = $("#DataGrid1");
-    var rows = $('tr',table);
 
+    // 第0行不是成绩
     for (var i = 1, length = rows.length; i < length; i++) {
         var tds = $(rows[i]).children();
         var score = $(tds[3]).text().trim();
@@ -139,21 +182,14 @@ function ShowAvgGPA() {//{{{
 
     avgScore /= scores.length - 1;
     avgGPA = sumGPA / sumCredit;
-    if (avgScore === 0 ) return;
 
-    var tb = $('tbody')[0];
-    var lastrow = document.createElement('tr');
-    var td1 = document.createElement('td');
-    td1.innerHTML = "平均绩点：" + avgGPA.toFixed(2);
-    td1.colSpan = "2";
-    var td2 = document.createElement('td');
-    td2.innerHTML = "平均分：" + avgScore.toFixed(2);
-    td2.colSpan = "2";
-    lastrow.appendChild(td1);
-    lastrow.appendChild(td2);
-    tb.appendChild(lastrow);
-}//}}}
-
+    if (avgScore === 0 )
+        return;
+    else {
+        this.avgScore = avgScore;
+        this.avgGPA = avgGPA;
+    }
+};//}}}
 
 //填写验证码
 function FillCaptcha() {//{{{
@@ -295,7 +331,7 @@ function init() {//{{{
     //LoadSettings();
     //ShowSettings();
     //FillCaptcha();
-    ShowAvgGPA();
+    GPA.init();
     AutoRank();
     //SaveSettings();
 }//}}}
