@@ -9,7 +9,7 @@
 // @require http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js
 // ==/UserScript==
 
-var url = document.URL.toString();//{{{
+var url = document.URL.toString();
 var loginPage = "http://jwgl.gdut.edu.cn";
 var xsjxpj = /.*xsjxpj\.aspx.*/;
 var xscj = /.*xscj\.aspx.*/;
@@ -25,10 +25,10 @@ var user = {
     'login_successed': '',
     // 是否需要重新输入用户信息
     'need_setup': ''
-};//}}}
+};
 
 //获取用户信息
-function LoadSettings() {//{{{
+function LoadSettings() {
     user.name = localStorage.name;
     user.password = localStorage.password;
     user.is_autologin = parseInt(localStorage.is_autologin, 10) || 0;
@@ -40,10 +40,10 @@ function LoadSettings() {//{{{
     } else {
         user.need_setup = true;
     }
-}//}}}
+}
 
 //显示配置信息
-function ShowSettings() {//{{{
+function ShowSettings() {
     if (default2.test(url)) {
         // 登录页
         $('.login_right dl').after(
@@ -72,17 +72,17 @@ function ShowSettings() {//{{{
             _save_user_settings();
         });
     }
-}//}}}
+}
 
 //保存配置信息到 localStorage
-function _save_user_settings() {//{{{
+function _save_user_settings() {
     var prop;
     for (prop in user) {
         localStorage.setItem(prop, user[prop]);
     }
-}//}}}
+}
 
-function SaveSettings() {//{{{
+function SaveSettings() {
     // 还在首页不做保存
     if (default2.test(url))
         return;
@@ -91,9 +91,9 @@ function SaveSettings() {//{{{
     user.login_time = 0;
     user.login_successed = 1;
     _save_user_settings();
-}//}}}
+}
 
-var GPA = {//{{{
+var GPA = {
     scores: [],
     GPA: [],
     credits: [],
@@ -101,10 +101,10 @@ var GPA = {//{{{
     avgGPA: 0,
     sumGPA: 0,
     sumCredit: 0
-};//}}}
+};
 
 // 初始化
-GPA.init = function() {//{{{
+GPA.init = function() {
     if (!xscj.test(url))
         return;
     this.table = $("#DataGrid1");
@@ -131,16 +131,16 @@ GPA.init = function() {//{{{
     tb.appendChild(lastrow);
 
     this.Show();
-};//}}}
+};
 
 // 显示平均绩点和平均分
-GPA.Show = function() {//{{{
+GPA.Show = function() {
     this.td1.innerHTML = "平均绩点：" + this.avgGPA.toFixed(2);
     this.td2.innerHTML = "平均分：" + this.avgScore.toFixed(2);
-};//}}}
+};
 
 // 计算平均绩点和平均分
-GPA.Calculate = function() {//{{{
+GPA.Calculate = function() {
     var rows = this.rows;
     var scores = this.scores;
     var GPA = this.GPA;
@@ -189,10 +189,11 @@ GPA.Calculate = function() {//{{{
         this.avgScore = avgScore;
         this.avgGPA = avgGPA;
     }
-};//}}}
+};
 
 //填写验证码
-function FillCaptcha() {//{{{
+function FillCaptcha()
+{
     if (!default2.test(url)) return;
     var imgs = document.getElementsByTagName("img");
     var image = imgs[3];
@@ -238,11 +239,11 @@ function FillCaptcha() {//{{{
             }
         }
     });
-}//}}}
+}
 
 
 //教学质量评价
-function AutoRank() {//{{{
+function AutoRank(){
     if (!xsjxpj.test(url)) return;
     var tds = $("td");
     var td = tds[1];
@@ -317,15 +318,15 @@ function AutoRank() {//{{{
     td.appendChild(bad);
     td.appendChild(randomGood);
     td.appendChild(randomBad);
-}//}}}
+}
 
-function ErrorPage() {//{{{
+function ErrorPage() {
     if (error.test(url)) {
         location.href = loginPage;
     }
-}//}}}
+}
 
-function init() {//{{{
+function init() {
     document.onmousedown = null;
     //ErrorPage();
     //LoadSettings();
@@ -334,6 +335,6 @@ function init() {//{{{
     GPA.init();
     AutoRank();
     //SaveSettings();
-}//}}}
+}
 
 init();
