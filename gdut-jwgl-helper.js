@@ -94,13 +94,8 @@ function SaveSettings() {
 }
 
 var GPA = {
-    scores: [],
-    GPA: [],
-    credits: [],
     avgScore: 0,
-    avgGPA: 0,
-    sumGPA: 0,
-    sumCredit: 0
+    avgGPA: 0
 };
 
 // 初始化
@@ -121,8 +116,6 @@ GPA.init = function() {
     td2.colSpan = "2";
     td2.id = "avgScore";
 
-    this.Calculate();
-
     this.td1 = td1;
     this.td2 = td2;
 
@@ -130,57 +123,80 @@ GPA.init = function() {
     lastrow.appendChild(td2);
     tb.appendChild(lastrow);
 
-    this.Show();
+    this.addCheckboxes();
+    this.show();
 };
 
-// 显示平均绩点和平均分
-GPA.Show = function() {
-    this.td1.innerHTML = "平均绩点：" + this.avgGPA.toFixed(2);
-    this.td2.innerHTML = "平均分：" + this.avgScore.toFixed(2);
+// 增加一列，选择计算
+GPA.addCheckboxes = function() {
+    var rows = this.rows;
+
+    var tdh = document.createElement('td');
+    tdh.innerHTML = "加入计算";
+    rows[0].appendChild(tdh);
+
+    for (var i = 1, len = rows.length;i < len;i++) {
+        var td = document.createElement('td');
+        var checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        checkbox.onclick = this.show;
+        checkbox.id = "check" + i;
+
+        td.appendChild(checkbox);
+        rows[i].appendChild(td);
+    }
 };
 
 // 计算平均绩点和平均分
-GPA.Calculate = function() {
+GPA.calculate = function() {
     var rows = this.rows;
-    var scores = this.scores;
-    var GPA = this.GPA;
-    var credits = this.credits;
     var avgScore = 0;
     var avgGPA = 0;
+    var sumScore = 0;
     var sumGPA = 0;
     var sumCredit = 0;
 
+    var total = 0;
     // 第0行不是成绩
     for (var i = 1, length = rows.length; i < length; i++) {
+        var checkbox = document.getElementById("check" + i);
+        if (checkbox.checked === false)
+            continue;
+
         var tds = $(rows[i]).children();
-        var score = $(tds[3]).text().trim();
-        if (score == '优秀') scores[i] = 95;
-        else if (score == '良好') scores[i] = 85;
-        else if (score == '中等') scores[i] = 75;
-        else if (score == '及格') scores[i] = 65;
-        else if (score == '不及格') scores[i] = 0;
-        else if (!isNaN(parseInt(score, 10))) scores[i] = score;
+        var score;
+        var gpa;
+        var credit;
+
+        score = $(tds[3]).text().trim();
+        credit = parseFloat($(tds[7]).text().trim());
+
+        if (score == '优秀') score = 95;
+        else if (score == '良好') score = 85;
+        else if (score == '中等') score = 75;
+        else if (score == '及格') score = 65;
+        else if (score == '不及格') score = 0;
         /**
          * TODO GPA NaN
          * 有时候会出现“免修”，那么这个时候绩点怎么算？
          */
-        else continue;
+        else score = parseFloat(score);
 
-        if ((scores[i] - 50) >= 10) {
-            GPA[i] = (scores[i] - 50) / 10; 
+
+        if ((score - 50) >= 10) {
+            gpa = (score - 50) / 10; 
         } else {
-            GPA[i] = 0;
+            gpa = 0;
         }
-        credits[i] = parseFloat($(tds[7]).text().trim());
+
+        sumCredit += credit;
+        sumGPA += gpa * credit;
+        avgScore += score;
+        total++;
     }
 
-    for (var i = 1, length = scores.length; i<length; i++) {
-        avgScore += parseFloat(scores[i]);
-        sumGPA += GPA[i] * credits[i];
-        sumCredit += credits[i];
-    }
-
-    avgScore /= scores.length - 1;
+    avgScore /= total;
     avgGPA = sumGPA / sumCredit;
 
     if (avgScore === 0 )
@@ -190,6 +206,14 @@ GPA.Calculate = function() {
         this.avgGPA = avgGPA;
     }
 };
+
+// 显示平均绩点和平均分
+GPA.show = function() {
+    GPA.calculate();
+    GPA.td1.innerHTML = "平均绩点：" + GPA.avgGPA.toFixed(2);
+    GPA.td2.innerHTML = "平均分：" + GPA.avgScore.toFixed(2);
+};
+
 
 //填写验证码
 function FillCaptcha()
