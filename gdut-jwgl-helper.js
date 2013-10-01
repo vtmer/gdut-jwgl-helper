@@ -94,8 +94,11 @@ function SaveSettings() {
 }
 
 var GPA = {
+    // 平均分
     avgScore: 0,
+    // 平均绩点
     avgGPA: 0,
+    // 加权平均分
     wAvgScore: 0
 };
 
@@ -109,22 +112,20 @@ GPA.init = function() {
     var tb = $('tbody')[0];
     var lastrow = document.createElement('tr');
 
-    var td1 = document.createElement('td');
-    td1.id = "avgGPA";
+    // 创建三个td显示平均绩点、平均分、加权平均分
+    var tdGPA = document.createElement('td');
+    tdGPA.id = "avgGPA";
+    var tdScore = document.createElement('td');
+    tdScore.id = "avgScore";
+    var tdWScore = document.createElement('td');
+    tdWScore.id = "wAvgScore";
+    this.tdGPA = tdGPA;
+    this.tdScore = tdScore;
+    this.tdWScore = tdWScore;
 
-    var td2 = document.createElement('td');
-    td2.id = "avgScore";
-
-    var td3 = document.createElement('td');
-    td3.id = "wAvgScore";
-
-    this.td1 = td1;
-    this.td2 = td2;
-    this.td3 = td3;
-
-    lastrow.appendChild(td1);
-    lastrow.appendChild(td2);
-    lastrow.appendChild(td3);
+    lastrow.appendChild(tdGPA);
+    lastrow.appendChild(tdScore);
+    lastrow.appendChild(tdWScore);
     tb.appendChild(lastrow);
 
     this.addCheckboxes();
@@ -182,6 +183,7 @@ GPA.calculate = function() {
     var rows = this.rows;
     var avgScore = 0;
     var avgGPA = 0;
+    var wAvgScore = 0;
     var sumScore = 0;
     var sumGPA = 0;
     var sumCredit = 0;
@@ -198,7 +200,6 @@ GPA.calculate = function() {
         var score;
         var gpa;
         var credit;
-        var wScore;
 
         score = $(tds[3]).text().trim();
         credit = parseFloat($(tds[7]).text().trim());
@@ -212,40 +213,36 @@ GPA.calculate = function() {
          * 有时候会出现“免修”，那么这个时候绩点怎么算？
          */
         else score = parseFloat(score);
-
+        // 绩点计算公式：
         if ((score - 50) >= 10) {
             gpa = (score - 50) / 10; 
         } else {
             gpa = 0;
         }
-        wScore = score * credit;
 
-        sumCredit += credit;
+        sumScore += score;
         sumGPA += gpa * credit;
-        sumWScore += wScore;
-        avgScore += score;
+        sumCredit += credit;
+        sumWScore += score * credit;
         total++;
     }
 
-    avgScore /= total;
-    avgGPA = sumGPA / sumCredit;
-    wAvgScore = sumWScore / sumCredit;
-
-    if (avgScore === 0 )
-        return;
-    else {
-        this.avgScore = avgScore;
-        this.avgGPA = avgGPA;
-        this.wAvgScore = wAvgScore;
+    if (total !== 0) {
+        avgScore /= total;
+        avgGPA = sumGPA / sumCredit;
+        wAvgScore = sumWScore / sumCredit;
     }
+    this.avgScore = avgScore;
+    this.avgGPA = avgGPA;
+    this.wAvgScore = wAvgScore;
 };
 
 // 显示平均绩点和平均分
 GPA.show = function() {
     GPA.calculate();
-    GPA.td1.innerHTML = "平均绩点：" + GPA.avgGPA.toFixed(2);
-    GPA.td2.innerHTML = "平均分：" + GPA.avgScore.toFixed(2);
-    GPA.td3.innerHTML = "加权平均分：" + GPA.wAvgScore.toFixed(2);
+    GPA.tdGPA.innerHTML = "平均绩点：" + GPA.avgGPA.toFixed(2);
+    GPA.tdScore.innerHTML = "平均分：" + GPA.avgScore.toFixed(2);
+    GPA.tdWScore.innerHTML = "加权平均分：" + GPA.wAvgScore.toFixed(2);
 };
 
 
