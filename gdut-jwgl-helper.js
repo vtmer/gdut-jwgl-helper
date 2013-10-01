@@ -95,7 +95,8 @@ function SaveSettings() {
 
 var GPA = {
     avgScore: 0,
-    avgGPA: 0
+    avgGPA: 0,
+    wAvgScore: 0
 };
 
 // 初始化
@@ -109,18 +110,21 @@ GPA.init = function() {
     var lastrow = document.createElement('tr');
 
     var td1 = document.createElement('td');
-    td1.colSpan = "2";
     td1.id = "avgGPA";
 
     var td2 = document.createElement('td');
-    td2.colSpan = "2";
     td2.id = "avgScore";
+
+    var td3 = document.createElement('td');
+    td3.id = "wAvgScore";
 
     this.td1 = td1;
     this.td2 = td2;
+    this.td3 = td3;
 
     lastrow.appendChild(td1);
     lastrow.appendChild(td2);
+    lastrow.appendChild(td3);
     tb.appendChild(lastrow);
 
     this.addCheckboxes();
@@ -181,6 +185,7 @@ GPA.calculate = function() {
     var sumScore = 0;
     var sumGPA = 0;
     var sumCredit = 0;
+    var sumWScore = 0;
 
     var total = 0;
     // 第0行不是成绩
@@ -193,10 +198,10 @@ GPA.calculate = function() {
         var score;
         var gpa;
         var credit;
+        var wScore;
 
         score = $(tds[3]).text().trim();
         credit = parseFloat($(tds[7]).text().trim());
-
         if (score == '优秀') score = 95;
         else if (score == '良好') score = 85;
         else if (score == '中等') score = 75;
@@ -208,27 +213,30 @@ GPA.calculate = function() {
          */
         else score = parseFloat(score);
 
-
         if ((score - 50) >= 10) {
             gpa = (score - 50) / 10; 
         } else {
             gpa = 0;
         }
+        wScore = score * credit;
 
         sumCredit += credit;
         sumGPA += gpa * credit;
+        sumWScore += wScore;
         avgScore += score;
         total++;
     }
 
     avgScore /= total;
     avgGPA = sumGPA / sumCredit;
+    wAvgScore = sumWScore / sumCredit;
 
     if (avgScore === 0 )
         return;
     else {
         this.avgScore = avgScore;
         this.avgGPA = avgGPA;
+        this.wAvgScore = wAvgScore;
     }
 };
 
@@ -237,6 +245,7 @@ GPA.show = function() {
     GPA.calculate();
     GPA.td1.innerHTML = "平均绩点：" + GPA.avgGPA.toFixed(2);
     GPA.td2.innerHTML = "平均分：" + GPA.avgScore.toFixed(2);
+    GPA.td3.innerHTML = "加权平均分：" + GPA.wAvgScore.toFixed(2);
 };
 
 
