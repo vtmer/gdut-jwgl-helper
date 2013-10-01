@@ -5,7 +5,7 @@ gdut-jwgl-helper
 ## 功能
 
 ### 计算平均绩点和平均分
-根据学生手册中提供的公式计算平均绩点和平均分，显示在顶部。
+根据学生手册中提供的公式计算平均绩点，平均分和加权平均分，显示在顶部。
 
 ![绩点](https://raw.github.com/vtmer/gdut-jwgl-helper/master/image/GPA.png)
 
@@ -15,9 +15,9 @@ gdut-jwgl-helper
 ![评价](https://raw.github.com/vtmer/gdut-jwgl-helper/master/image/rank.png)
 
 ### 选择性计算绩点和平均分
-切换选中状态后，平均绩点和平均分会马上更新。
+点击选择要计算的科目，每次点击都会重新计算结果。
 
-![选择性计算](http://ww3.sinaimg.cn/large/819aa34egw1e94tq296mqj206a0ca0tc.jpg)
+![选择性计算](https://raw.github.com/vtmer/gdut-jwgl-helper/master/image/check.png)
 
 
 

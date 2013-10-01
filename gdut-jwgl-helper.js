@@ -228,7 +228,7 @@ GPA.calculate = function() {
     }
 
     if (total !== 0) {
-        avgScore /= total;
+        avgScore = sumScore / total;
         avgGPA = sumGPA / sumCredit;
         wAvgScore = sumWScore / sumCredit;
     }
