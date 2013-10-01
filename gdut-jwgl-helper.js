@@ -132,7 +132,23 @@ GPA.addCheckboxes = function() {
     var rows = this.rows;
 
     var tdh = document.createElement('td');
-    tdh.innerHTML = "加入计算";
+    var allLabel = document.createElement('label');
+    var allCheck = document.createElement('input');
+    $(allLabel).html('全选');
+    $(allLabel).attr('for', 'allCheck');
+    $(allCheck).attr('id', 'allCheck');
+    $(allCheck).attr("type", "checkbox");
+    $(allCheck).attr("checked", true);
+    $(allCheck).click(function() {
+        if ($(this).attr('checked') === 'checked') {
+            $('input[type="checkbox"]').attr('checked', true);
+        } else {
+            $('input[type="checkbox"]').attr('checked', false);
+        }
+        GPA.show();
+    });
+    tdh.appendChild(allCheck);
+    tdh.appendChild(allLabel);
     rows[0].appendChild(tdh);
 
     for (var i = 1, len = rows.length;i < len;i++) {
