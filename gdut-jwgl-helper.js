@@ -138,13 +138,22 @@ GPA.addCheckboxes = function() {
     for (var i = 1, len = rows.length;i < len;i++) {
         var td = document.createElement('td');
         var checkbox = document.createElement('input');
-        checkbox.type = "checkbox";
-        checkbox.checked = true;
-        checkbox.onclick = this.show;
+        $(checkbox).attr("type", "checkbox");
+        $(checkbox).attr("checked", true);
+        $(checkbox).change(GPA.show);
         checkbox.id = "check" + i;
 
         td.appendChild(checkbox);
         rows[i].appendChild(td);
+        $(rows[i]).click(function() {
+            var check = $($(this).children()[9]).children()[0];
+            if ($(check).attr('checked') === 'checked') {
+                $(check).attr('checked', false);
+            } else {
+                $(check).attr('checked', true);
+            }
+            GPA.show();
+        });
     }
 };
 
