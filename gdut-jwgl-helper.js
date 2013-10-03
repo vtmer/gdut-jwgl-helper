@@ -161,7 +161,10 @@ GPA.addCheckboxes = function() {
         var checkbox = document.createElement('input');
         $(checkbox).attr("type", "checkbox");
         $(checkbox).attr("checked", true);
-        $(checkbox).change(GPA.show);
+        $(checkbox).change(function(){
+            GPA.show();
+            event.stopPropagation();
+        });
         checkbox.id = "check" + i;
 
         td.appendChild(checkbox);
