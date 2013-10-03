@@ -161,8 +161,11 @@ GPA.addCheckboxes = function() {
         var checkbox = document.createElement('input');
         $(checkbox).attr("type", "checkbox");
         $(checkbox).attr("checked", true);
-        $(checkbox).change(function(){
+        $(checkbox).change(function(event){
             GPA.show();
+        });
+        // 停止冒泡事件，即停止tr的click事件的发生。
+        $(checkbox).click(function(event) {
             event.stopPropagation();
         });
         checkbox.id = "check" + i;
