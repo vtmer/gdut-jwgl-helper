@@ -123,6 +123,12 @@ GPA.init = function() {
     this.tdScore = tdScore;
     this.tdWScore = tdWScore;
 
+    // 增加两列，显示每一科的学分绩点
+    $("<td></td>").appendTo($(this.rows));
+    $("td:last-child", this.rows[0]).html('绩点');
+    $("<td></td>").appendTo($(this.rows));
+    $("td:last-child", this.rows[0]).html('学分绩点');
+
     lastrow.appendChild(tdGPA);
     lastrow.appendChild(tdScore);
     lastrow.appendChild(tdWScore);
@@ -225,6 +231,9 @@ GPA.calculate = function() {
         } else {
             gpa = 0;
         }
+
+        $(tds[9]).text(gpa.toFixed(2));
+        $(tds[10]).text((gpa * credit).toFixed(2));
 
         sumScore += score;
         sumGPA += gpa * credit;
