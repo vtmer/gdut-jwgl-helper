@@ -35,8 +35,8 @@ gdut-jwgl-helper
 
 #### 方案二：
 
-安装 [Chrome 插件](gdut_jwgl_helper.crx)，因为暂时还未在 Chrome Web Store 上
-架，所以先手拖到 chrome://extensions 安装吧 :)
+安装 [Chrome插件](https://github.com/vtmer/gdut-jwgl-helper/blob/master/gdut-jwgl-helper.crx?raw=true)，
+因为暂时还未在 Chrome Web Store 上架，所以先手拖到 chrome://extensions 安装吧 :)
 
 
 ### Firefox
@@ -45,3 +45,7 @@ gdut-jwgl-helper
 
 ## 开发者
 [维生数工作室](http://vtmer.com)
+
+[@Link](http://weibo.com/linkjie)
+
+[@hbc](http://www.douban.com/people/minibc)
