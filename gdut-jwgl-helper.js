@@ -179,7 +179,7 @@ GPA.addCheckboxes = function() {
         td.appendChild(checkbox);
         rows[i].appendChild(td);
         $(rows[i]).click(function() {
-            var check = $($(this).children()[9]).children()[0];
+            var check = $($(this).children()[11]).children()[0];
             if ($(check).attr('checked') === 'checked') {
                 $(check).attr('checked', false);
             } else {
