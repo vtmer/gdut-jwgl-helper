@@ -24,7 +24,7 @@ gdut-jwgl-helper
 
 ## 安裝
 
-[脚本地址](http://raw.github.com/vtmer/gdut-jwgl-helper/master/gdut_jwgl_helper.js)
+[脚本地址](http://raw.github.com/vtmer/gdut-jwgl-helper/master/gdut-jwgl-helper.js)
 
 ### Chrome / Chromium / 猎豹 / 360
 
