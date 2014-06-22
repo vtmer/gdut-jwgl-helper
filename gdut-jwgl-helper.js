@@ -5,6 +5,10 @@
 // @description	better experience on gdut jwgl system
 // @match      http://jwgl.gdut.edu.cn/*
 // @match      http://jwgldx.gdut.edu.cn/*	
+// @match      http://222.200.98.201/*
+// @match      http://222.200.98.204/*
+// @match      http://222.200.98.205/*
+// @match      http://222.200.98.206/*
 // @copyright  2013, VTM STUDIO
 // @require http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js
 // ==/UserScript==
