@@ -20,11 +20,11 @@ var xscj = /.*xscj\.aspx.*/;
 var default2 = /.*default2\.aspx.*/i;
 var error = /.*zdy\.htm.*/;
 var user = {
-    'name': '',
+    'username': '',
     'password': '',
-    'is_autologin': '',
+    // 'is_autologin': '',
     // 记录连续登录次数
-    'login_time': '',
+    // 'login_time': '',
     // 上次登录是否成功
     'login_successed': '',
     // 是否需要重新输入用户信息
@@ -33,33 +33,38 @@ var user = {
 
 //获取用户信息
 function LoadSettings() {
-    user.name = localStorage.name;
+    user.username = localStorage.username;
     user.password = localStorage.password;
     user.is_autologin = parseInt(localStorage.is_autologin, 10) || 0;
-    user.login_time = parseInt(localStorage.login_time, 10) || 0;
-    user.login_successed = parseInt(localStorage.login_successed, 10) || 0;
+    // user.login_time = parseInt(localStorage.login_time, 10) || 0;
+    // user.login_successed = parseInt(localStorage.login_successed, 10) || 0;
     // 之前必须登录成功过
-    if (user.name && user.password && user.login_successed) {
+    if (user.username && user.password && user.username != "undefined" && user.password != "undefined") {
         user.need_setup = false;
+        console.log(user.need_setup);
+        document.getElementById("txtUserName").value = user.username;
+        document.getElementById("TextBox2").value = user.password;
+
     } else {
         user.need_setup = true;
     }
+    
 }
 
 //显示配置信息
 function ShowSettings() {
     if (default2.test(url)) {
         // 登录页
-        $('.login_right dl').after(
-            '<input type="checkbox" name="auto_login" />' +
-            '<label for="auto_login">以后自动登录</label>'
+        $('#RadioButtonList1').after(
+            '<input id= "auto_login" type="checkbox" name="auto_login" />' +
+            '<label for="auto_login">自动登录</label>'
         );
         if (user.is_autologin) {
             $('input[name=auto_login]').attr({checked: 'checked'});
         }
 
         $('input#Button1').click(function() {
-            user.name = $('#TextBox1').val();
+            user.username = $('#txtUserName').val();
             user.password = $('#TextBox2').val();
             if ($('input[name="auto_login"]').is(':checked')) {
                 user.is_autologin = 1;
@@ -68,14 +73,15 @@ function ShowSettings() {
             }
             _save_user_settings();
         });
-    } else {
-        // 登录后安全退出要取消自动登录
-        $('.info ul a#likTc').click(function() {
-            user.is_autologin = 0;
-            user.login_successed = 0;
-            _save_user_settings();
-        });
-    }
+    } 
+    // else {
+    //     // 登录后安全退出要取消自动登录
+    //     $('.info ul a#likTc').click(function() {
+    //         user.is_autologin = 0;
+    //         user.login_successed = 0;
+    //         _save_user_settings();
+    //     });
+    // }
 }
 
 //保存配置信息到 localStorage
@@ -86,16 +92,17 @@ function _save_user_settings() {
     }
 }
 
-function SaveSettings() {
-    // 还在首页不做保存
-    if (default2.test(url))
-        return;
+// function SaveSettings() {
+//     // 还在首页不做保存
+//     if (default2.test(url))
+//         _save_user_settings();
+//         return;
 
-    // 成功登录，登录次数置零
-    user.login_time = 0;
-    user.login_successed = 1;
-    _save_user_settings();
-}
+//     // 成功登录，登录次数置零
+//     // user.login_time = 0;
+//     user.login_successed = 1;
+//     _save_user_settings();
+// }
 
 var GPA = {
     // 平均分
@@ -305,7 +312,7 @@ function FillCaptcha()
         }
         document.querySelector("input[name=TextBox3]").value = captcha;
         if (!user.need_setup) {
-            document.getElementById("TextBox1").value = user.name;
+            document.getElementById("TextBox1").value = user.username;
             document.getElementById("TextBox2").value = user.password;
 
             if (user.is_autologin) {
@@ -403,12 +410,57 @@ function ErrorPage() {
 function init() {
     document.onmousedown = null;
     //ErrorPage();
-    //LoadSettings();
-    //ShowSettings();
-    //FillCaptcha();
+    LoadSettings();
+    ShowSettings();
+    // FillCaptcha();
+    // 覆盖主页
+    Newmain();
     GPA.init();
     AutoRank();
-    //SaveSettings();
+    // SaveSettings();
 }
 
 init();
+
+
+// 使用新的主页
+function Newmain(){
+    if (default2.test(url)){
+        $("style").after('<style>'+
+            '*{font-family: "Microsoft Yahei";font-size: 16px;} h2,h3,.login_pic,.login_copyright,#icodems,#RadioButtonList1,.login_left,.login_logo{display: none; } .login_bg,.login_left,.login_logo,.login_right,.login_right .uesr,.login_right .passw,.login_right .yzm ,.login_right .btn_dl,.login_right .btn_dl:hover,.login_right .btn_cz,.login_right .btn_cz:hover{background:rgba(0, 0, 0,0) !important; } .login_bg{background:#fff url("http://i2.tietuku.com/f59272acaa0140a8.jpg") no-repeat !important; background-size:cover !important; } .login_right{position: relative; left: 25%; padding-top: 90px; } #txtSecretCode{width: 62px; } .login_right .btn_dl,.login_right .btn_dl:hover{cursor: pointer; margin-left: 24px; width: 99px; height: 38px; border: 0 none; font-weight: bold; font-size: 16px; font-family: "Microsoft Yahei"; color: #fff; background: #598CDF !important; text-shadow: 1px 0px 0px #154BA2; } .login_right .btn_cz,.login_right .btn_cz:hover{cursor: pointer; margin-left: 5px; width: 99px; height: 38px; border: 0 none; font-weight: bold; font-size: 16px; font-family: "Microsoft Yahei"; color: #fff; background: #598CDF !important; text-shadow: 1px 0px 0px #154BA2; } #icode {margin-left: 30px; } #auto_login{margin-left: 150px; }'
+            +'</style>');
+             }
+        $("#Button1").attr("value","登录");
+        $("#Button2").attr("value","重置");
+}
+//检测验证码是否输完
+function Captchaok(){
+    console.log(document.getElementById("txtSecretCode").value.length);
+    if(document.getElementById("txtSecretCode").value.length==4)
+        {return true;}
+    return false;
+
+}
+// 检查是否可以按下登录了
+function autologin(){
+    console.log(user.is_autologin&&Captchaok());
+    if (user.is_autologin&&Captchaok()) {
+                document.getElementById("Button1").click();
+            }
+}
+$(document).ready(function(){   
+    $("#txtSecretCode").focus();   
+});
+var captcha = 0;
+setInterval(function(){
+    console.log(document.getElementById("txtSecretCode").value);
+        if(captcha!=document.getElementById("txtSecretCode").value)
+        {
+            console.log("1234");
+            autologin();
+            captcha=document.getElementById("txtSecretCode").value;
+        }
+    
+    
+
+    },100);
