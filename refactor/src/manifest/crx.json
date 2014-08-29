@@ -1,0 +1,32 @@
+{  
+  "content_scripts":[  
+    {  
+      "matches":[  
+        "http://jwgl.gdut.edu.cn/*",
+        "http://jwgldx.gdut.edu.cn/*",
+        "http://222.200.98.201/*",
+        "http://222.200.98.204/*",
+        "http://222.200.98.205/*",
+        "http://222.200.98.206/*"
+      ],
+      "all_frames":true,
+      "run_at":"document_end",
+      "js": [
+        "jquery.min.js",
+        "gdut-jwgl-helper.js"
+      ]
+    }
+  ],
+  "name":"GDUT 教务管理系统 helper",
+  "description":"make jwgl.gdut.edu.cn better",
+  "version":"0.2",
+  "manifest_version":2,
+  "permissions":[  
+    "http://jwgl.gdut.edu.cn/*",
+    "http://jwgldx.gdut.edu.cn/*",
+    "http://222.200.98.201/*",
+    "http://222.200.98.204/*",
+    "http://222.200.98.205/*",
+    "http://222.200.98.206/*"
+  ]
+}
