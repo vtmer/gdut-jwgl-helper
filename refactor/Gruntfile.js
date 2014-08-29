@@ -80,7 +80,7 @@ module.exports = function (grunt) {
         watch: {
             src: {
                 files: ['<%= dir.src %>/**/*.js', '<%= dir.src %>/**/*.json'],
-                tasks: ['package']
+                tasks: ['copy:build_crx', 'build_gm']
             }
         }
 
