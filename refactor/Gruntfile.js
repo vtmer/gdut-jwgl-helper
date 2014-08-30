@@ -122,7 +122,7 @@ module.exports = function (grunt) {
 
     // 默认任务：检测代码改动并自动打包
     grunt.registerTask('default', [
-        'watch'
+        'watch:src'
     ]);
 
 };
