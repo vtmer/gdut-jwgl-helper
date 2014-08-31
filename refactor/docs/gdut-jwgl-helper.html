@@ -27,7 +27,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>页面地址路由</p>
+              <h2 id="-">页面地址路由</h2>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> page = <span class="hljs-keyword">new</span> Page;
 
  <span class="hljs-comment">// 挂载对应页面的回调</span>
@@ -87,7 +87,7 @@
         <span class="hljs-keyword">if</span> (pattern <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">RegExp</span>) {
             compiledPattern = pattern;
         } <span class="hljs-keyword">else</span> {
-            compiledPattern = <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(pattern);
+            compiledPattern = <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">'^'</span> + pattern + <span class="hljs-string">'$'</span>);
         }
 
         <span class="hljs-keyword">this</span>._routes[pattern] = {
@@ -97,6 +97,8 @@
     }
 
     <span class="hljs-keyword">this</span>._routes[pattern].callbacks.push(callback);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
 }</pre></div></div>
             
         </li>
@@ -131,7 +133,8 @@
         url = location.pathname.slice(<span class="hljs-number">1</span>, location.pathname.length);
     }
 
-    <span class="hljs-keyword">var</span> matchedParts;
+    <span class="hljs-keyword">var</span> matchedParts,
+        foundMatched = <span class="hljs-literal">false</span>;
 
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> pattern <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>._routes) {
         matchedParts = <span class="hljs-keyword">this</span>._routes[pattern].compiled.exec(url);</pre></div></div>
@@ -150,6 +153,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (matchedParts !== <span class="hljs-literal">null</span>) {
+            foundMatched = <span class="hljs-literal">true</span>;
+            
             matchedParts.shift();
 
             <span class="hljs-keyword">this</span>._routes[pattern].callbacks.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(callback)</span> </span>{
@@ -157,6 +162,8 @@
             });
         }
     }
+
+    <span class="hljs-keyword">return</span> foundMatched;
 };</pre></div></div>
             
         </li>
@@ -168,22 +175,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>创建一个 dom 元素并插入到指定父元素下</p>
+              <h2 id="gpa-">GPA 计算器</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeElement</span><span class="hljs-params">(text, name, type, parent)</span> </span>{
-    <span class="hljs-keyword">var</span> element = <span class="hljs-built_in">document</span>.createElement(type);
-
-    element.id = name;
-    element.innerText = text;
-
-    <span class="hljs-keyword">if</span> (parent) {
-        $(parent).append(element);
-    }
-
-    <span class="hljs-keyword">return</span> element;
-}</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> GPA = {</pre></div></div>
             
         </li>
         
@@ -194,12 +190,25 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <h2 id="-">助手部分</h2>
+              <p>等级对应成绩</p>
+<ul>
+<li>免修、优秀： 95</li>
+<li>良好：85</li>
+<li>中等：75</li>
+<li>及格：65</li>
+<li>不及格： 0</li>
+<li>重修：0</li>
+</ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-<span class="hljs-keyword">var</span> page = <span class="hljs-keyword">new</span> Page;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    realScore: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(score)</span> </span>{
+        <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'免修'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">95</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'优秀'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">95</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'良好'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">85</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'中等'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">75</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'及格'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">65</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'不及格'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</pre></div></div>
             
         </li>
         
@@ -210,11 +219,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <h3 id="-">登录页</h3>
+              <p>没有填写的情况当作 0 （出现在重修栏）</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>page.on(<span class="hljs-string">'default2.aspx'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{});</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">''</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(score);
+    },</pre></div></div>
             
         </li>
         
@@ -225,9 +236,18 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <h3 id="-">成绩页面</h3>
-
+              <p>从分数或等级计算绩点</p>
+<p>绩点计算公式：</p>
+<pre><code> GPA = (s - <span class="hljs-number">50</span>) / <span class="hljs-number">10</span>         (s &gt;= <span class="hljs-number">60</span>)
+       <span class="hljs-number">0</span>                     (s &lt; <span class="hljs-number">60</span>)
+</code></pre>
             </div>
+            
+            <div class="content"><div class='highlight'><pre>    fromScoreOrGradeLevel: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(score)</span> </span>{
+        score = GPA.realScore(score);
+
+        <span class="hljs-keyword">return</span> (score &lt; <span class="hljs-number">60</span>) ? <span class="hljs-number">0</span> : ((score - <span class="hljs-number">50</span>) / <span class="hljs-number">10</span>);
+    },</pre></div></div>
             
         </li>
         
@@ -238,15 +258,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>计算 GPA</p>
-
+              <p>计算一门课程的学分绩点</p>
+<p>计算公式：</p>
+<pre><code> CreditGPA = Credit * GPA      
+</code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>page.on(<span class="hljs-string">'xscj.aspx'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-    <span class="hljs-keyword">var</span> $infoRows = $(<span class="hljs-string">'#Table1 tbody'</span>),
-        $scoreTable = $(<span class="hljs-string">'#DataGrid1'</span>),
-        $scoreTableHead = $(<span class="hljs-string">'#DataGrid1 .datelisthead'</span>),
-        $scoreRows = $(<span class="hljs-string">'#DataGrid1 tr'</span>).not(<span class="hljs-string">'.datelisthead'</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    creditGPA: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lecture)</span> </span>{ <span class="hljs-keyword">return</span> lecture.credit * lecture.gpa },</pre></div></div>
             
         </li>
         
@@ -257,15 +275,15 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>插入汇总栏: 平均绩点、平均分、加权平均分</p>
+              <p>计算若干门课程的总绩点</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> avgCell = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'tr'</span>),
-        avgGPA = makeElement(<span class="hljs-string">'平均绩点: '</span>, <span class="hljs-string">'avg-gpa'</span>, <span class="hljs-string">'td'</span>, avgCell),
-        avgScore = makeElement(<span class="hljs-string">'平均分: '</span>, <span class="hljs-string">'avg-score'</span>, <span class="hljs-string">'td'</span>, avgCell),
-        weightedAvgScore = makeElement(<span class="hljs-string">'加权平均分: '</span>, <span class="hljs-string">'weighted-avg-score'</span>, <span class="hljs-string">'td'</span>, avgCell);
-    $infoRows.append(avgCell);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    sumCredit: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lectures)</span> </span>{
+        <span class="hljs-keyword">return</span> lectures.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(sum, lecture)</span> </span>{
+            <span class="hljs-keyword">return</span> sum + lecture.credit;
+        }, <span class="hljs-number">0</span>);
+    },</pre></div></div>
             
         </li>
         
@@ -276,22 +294,19 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>插入各行汇总栏: 绩点、学分绩点、是否加入计算</p>
+              <p>计算若干门课程的平均分</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    makeElement(<span class="hljs-string">'绩点'</span>, <span class="hljs-string">''</span>, <span class="hljs-string">'td'</span>, $scoreTableHead);
-    makeElement(<span class="hljs-string">'学分绩点'</span>, <span class="hljs-string">''</span>, <span class="hljs-string">'td'</span>, $scoreTableHead);
-    $(<span class="hljs-string">'&lt;input type="checkbox" class="lecture-check-all" /&gt;'</span>).appendTo(
-        makeElement(<span class="hljs-string">'全选 '</span>, <span class="hljs-string">''</span>, <span class="hljs-string">'td'</span>, $scoreTableHead)
-    );
+            <div class="content"><div class='highlight'><pre>    avgScore: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lectures)</span> </span>{
+        <span class="hljs-keyword">if</span> (lectures.length === <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        }
 
-    <span class="hljs-keyword">var</span> rowCellsTmpl = [
-        <span class="hljs-string">'&lt;td class="gpa"&gt;&lt;/td&gt;'</span>,
-        <span class="hljs-string">'&lt;td class="credit-gpa"&gt;&lt;/td&gt;'</span>,
-        <span class="hljs-string">'&lt;td &gt;&lt;input type="checkbox" class="lecture-check"&gt;&lt;/input&gt;&lt;/td&gt;'</span>
-    ];
-    $(rowCellsTmpl.join(<span class="hljs-string">''</span>)).appendTo($scoreRows);</pre></div></div>
+        <span class="hljs-keyword">return</span> lectures.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(sum, lecture)</span> </span>{
+            <span class="hljs-keyword">return</span> sum + GPA.realScore(lecture.grade.score);
+        }, <span class="hljs-number">0</span>) / lectures.length;
+    },</pre></div></div>
             
         </li>
         
@@ -302,16 +317,21 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>计算 GPA</p>
-<p>计算公式：</p>
-<pre><code> GPA = (s - <span class="hljs-number">50</span>) / <span class="hljs-number">10</span>         (s &gt;= <span class="hljs-number">60</span>)
-       <span class="hljs-number">0</span>                     (s &lt; <span class="hljs-number">60</span>)
-</code></pre>
+              <p>计算若干门课程的平均学分绩点</p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> calculateGPA = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(score)</span> </span>{
-        <span class="hljs-keyword">return</span> score &lt; <span class="hljs-number">60</span> ? <span class="hljs-number">0</span> : (score - <span class="hljs-number">50</span>) / <span class="hljs-number">10</span>;
-    };</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    avgCreditGPA: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lectures)</span> </span>{
+        <span class="hljs-keyword">if</span> (lectures.length === <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        }
+
+        <span class="hljs-keyword">var</span> sumCreditGPA = lectures.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(sum, lecture)</span> </span>{
+            <span class="hljs-keyword">return</span> sum + GPA.creditGPA(lecture);
+        }, <span class="hljs-number">0</span>);
+
+        <span class="hljs-keyword">return</span> sumCreditGPA / GPA.sumCredit(lectures);
+    },</pre></div></div>
             
         </li>
         
@@ -322,7 +342,33 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>提取各行各栏课程数据</p>
+              <p>计算若干门课程的加权平均分</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    avgWeightedScore: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lectures)</span> </span>{
+        <span class="hljs-keyword">if</span> (lectures.length === <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        }
+
+        <span class="hljs-keyword">var</span> sumWeighedScore = lectures.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(sum, lecture)</span> </span>{
+            <span class="hljs-keyword">return</span> sum + lecture.credit * GPA.realScore(lecture.grade.score);
+        }, <span class="hljs-number">0</span>);
+
+        <span class="hljs-keyword">return</span> sumWeighedScore / GPA.sumCredit(lectures);
+    }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h2 id="-">课程成绩记录定义</h2>
 <ul>
 <li>code        :  课程代码</li>
 <li>name        :  课程名称</li>
@@ -341,31 +387,20 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> extractLecture = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(row)</span> </span>{
-        <span class="hljs-keyword">var</span> $cols = $(<span class="hljs-string">'td'</span>, row),
-            extractText = _t = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{ <span class="hljs-keyword">return</span> $(x).text().trim(); },
-            extractScore = _g = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{
-                <span class="hljs-keyword">var</span> score = extractText(x);</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-16">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
-              </div>
-              <p>处理等级的情况</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'免修'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">95</span>;
-                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'优秀'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">95</span>;
-                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'良好'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">85</span>;
-                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'中等'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">75</span>;
-                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'及格'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">65</span>;
-                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">'不及格'</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Lecture</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">this</span>.code = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>.name = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>.type = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>.attribution = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">this</span>.isMinor = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">this</span>.credit = <span class="hljs-number">0.0</span>;
+    <span class="hljs-keyword">this</span>.grade = {
+        score: <span class="hljs-number">0.0</span>,
+        makeup: <span class="hljs-number">0.0</span>,
+        rework: <span class="hljs-number">0.0</span>
+    };
+    <span class="hljs-keyword">this</span>.gpa = <span class="hljs-number">0.0</span>;
+}</pre></div></div>
             
         </li>
         
@@ -376,31 +411,38 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>没有填写的情况当作 0 （出现在重修栏）</p>
+              <p>从 <code>table tr</code> 中获取一个课程信息</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (score === <span class="hljs-string">''</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
-                <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(score);
-            };
+            <div class="content"><div class='highlight'><pre>Lecture.fromTableRow = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(row)</span> </span>{
+    <span class="hljs-keyword">var</span> _t, _f, _p;
 
-        <span class="hljs-keyword">return</span> {
-            <span class="hljs-string">'code'</span>: _t($cols[<span class="hljs-number">0</span>]),
-            <span class="hljs-string">'name'</span>: _t($cols[<span class="hljs-number">1</span>]),
-            <span class="hljs-string">'type'</span>: _t($cols[<span class="hljs-number">2</span>]),
-            <span class="hljs-string">'attribution'</span>: _t($cols[<span class="hljs-number">4</span>]),
-            <span class="hljs-string">'is_minor'</span>: _t($cols[<span class="hljs-number">8</span>]) === <span class="hljs-string">'1'</span>,
-            <span class="hljs-string">'credit'</span>: <span class="hljs-built_in">parseFloat</span>(_t($cols[<span class="hljs-number">7</span>])),
-            <span class="hljs-string">'grade'</span>: {
-                <span class="hljs-string">'score'</span>: _g($cols[<span class="hljs-number">3</span>]),
-                <span class="hljs-string">'makeup'</span>: _g($cols[<span class="hljs-number">5</span>]),
-                <span class="hljs-string">'rework'</span>: _g($cols[<span class="hljs-number">6</span>])
-            },
-            <span class="hljs-string">'gpa'</span>: calculateGPA(_g($cols[<span class="hljs-number">3</span>]))
+    <span class="hljs-keyword">var</span> _parseText = _t = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{ <span class="hljs-keyword">return</span> $(x).text().trim() ;},
+        _parseFloatOrText = _f = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{
+            <span class="hljs-keyword">var</span> parsedText = _parseText(x),
+                parsedFloat = <span class="hljs-built_in">parseFloat</span>(parsedText);
+            
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">isNaN</span>(parsedFloat) ? parsedText : parsedFloat;
         };
-    };
 
-    <span class="hljs-keyword">var</span> lectures = $.map($scoreRows, extractLecture);</pre></div></div>
+    <span class="hljs-keyword">var</span> $cols = $(<span class="hljs-string">'td'</span>, row),
+        lecture = <span class="hljs-keyword">new</span> Lecture,
+        _takeFromRows = _p = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(idx, parser)</span> </span>{ <span class="hljs-keyword">return</span> parser($cols[idx]); }
+
+    lecture.code = _p(<span class="hljs-number">0</span>, _t);
+    lecture.name = _p(<span class="hljs-number">1</span>, _t);
+    lecture.type = _p(<span class="hljs-number">2</span>, _t);
+    lecture.grade.score = _p(<span class="hljs-number">3</span>, _f) || <span class="hljs-number">0.0</span>;
+    lecture.attribution = _p(<span class="hljs-number">4</span>, _t);
+    lecture.grade.makeup = _p(<span class="hljs-number">5</span>, _f) || <span class="hljs-number">0.0</span>;
+    lecture.grade.rework = _p(<span class="hljs-number">6</span>, _f) || <span class="hljs-number">0.0</span>;
+    lecture.credit = _p(<span class="hljs-number">7</span>, _f);
+    lecture.isMinor = _p(<span class="hljs-number">8</span>, _t) === <span class="hljs-string">'1'</span>;
+    lecture.gpa = GPA.fromScoreOrGradeLevel(lecture.grade.score);
+
+    <span class="hljs-keyword">return</span> lecture;
+};</pre></div></div>
             
         </li>
         
@@ -411,17 +453,13 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
-              <p>插入到各栏中</p>
+              <p>从 <code>table</code> 中获取一系列课程信息</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    $scoreRows.each(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(i, row)</span> </span>{
-        <span class="hljs-keyword">var</span> $row = $(row),
-            lecture = lectures[i];
-
-        $row.find(<span class="hljs-string">'.gpa'</span>).text(lecture.gpa.toFixed(<span class="hljs-number">2</span>));
-        $row.find(<span class="hljs-string">'.credit-gpa'</span>).text((lecture.gpa * lecture.credit).toFixed(<span class="hljs-number">2</span>));
-    });</pre></div></div>
+            <div class="content"><div class='highlight'><pre>Lecture.fromRows = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(rows)</span> </span>{
+    <span class="hljs-keyword">return</span> $.map(rows, Lecture.fromTableRow);
+};</pre></div></div>
             
         </li>
         
@@ -432,12 +470,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>绑定各栏的勾选事件</p>
+              <h2 id="-">助手部分</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    $scoreRows.click(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">var</span> $checkbox = $(<span class="hljs-keyword">this</span>).find(<span class="hljs-string">'input'</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">var</span> page = <span class="hljs-keyword">new</span> Page;</pre></div></div>
             
         </li>
         
@@ -448,12 +486,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>反转勾选状态</p>
+              <h3 id="-">登录页</h3>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        $checkbox.prop(<span class="hljs-string">'checked'</span>, !$checkbox.prop(<span class="hljs-string">'checked'</span>)).trigger(<span class="hljs-string">'change'</span>);
-    });</pre></div></div>
+            <div class="content"><div class='highlight'><pre>page.on(<span class="hljs-string">'default2.aspx'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{});</pre></div></div>
             
         </li>
         
@@ -464,43 +501,9 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>计算汇总</p>
-<ul>
-<li>avgScore         :  平均成绩</li>
-<li>avgGPA           :  平均绩点</li>
-<li>weightedAvgScore :  加权平均分</li>
-</ul>
+              <h3 id="-">成绩页面</h3>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> summarize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lectures)</span> </span>{
-        <span class="hljs-keyword">var</span> totalLectures = lectures.length,
-            sumScore = <span class="hljs-number">0.0</span>,
-            sumGPA = <span class="hljs-number">0.0</span>,
-            sumCredit = <span class="hljs-number">0.0</span>,
-            sumWeightedScore = <span class="hljs-number">0.0</span>;
-
-        <span class="hljs-keyword">if</span> (totalLectures &lt;= <span class="hljs-number">0</span>) {
-            <span class="hljs-keyword">return</span> {
-                avgScore: <span class="hljs-number">0.0</span>,
-                avgGPA: <span class="hljs-number">0.0</span>,
-                weightedAvgScore: <span class="hljs-number">0.0</span>
-            };
-        }
-        
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; totalLectures; i++) {
-            sumScore += lectures[i].grade.score;
-            sumGPA += lectures[i].credit * lectures[i].gpa;
-            sumCredit += lectures[i].credit;
-            sumWeightedScore += lectures[i].credit * lectures[i].grade.score;
-        }
-
-        <span class="hljs-keyword">return</span> {
-            avgScore: sumScore / totalLectures,
-            avgGPA: sumGPA / sumCredit,
-            weightedAvgScore: sumWeightedScore / sumCredit
-        };
-    };</pre></div></div>
             
         </li>
         
@@ -511,15 +514,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>插入到汇总栏中</p>
+              <p>计算 GPA</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> insertSummarize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
-        avgGPA.innerHTML = <span class="hljs-string">'平均绩点: '</span> + result.avgGPA.toFixed(<span class="hljs-number">2</span>);
-        avgScore.innerHTML = <span class="hljs-string">'平均分: '</span> + result.avgScore.toFixed(<span class="hljs-number">2</span>);
-        weightedAvgScore.innerHTML = <span class="hljs-string">'加权平均分: '</span> + result.weightedAvgScore.toFixed(<span class="hljs-number">2</span>);
-    };</pre></div></div>
+            <div class="content"><div class='highlight'><pre>page.on(<span class="hljs-string">'xscj.aspx'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{</pre></div></div>
             
         </li>
         
@@ -530,16 +529,14 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p>绘制汇总栏</p>
+              <p>页面元素</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> renderSummarize = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-        <span class="hljs-keyword">var</span> checkedRows = $(<span class="hljs-string">'.lecture-check:checked'</span>).parent().parent(),
-            lectures = $.map(checkedRows, extractLecture);
-
-        insertSummarize(summarize(lectures));
-    };</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> $infoRows = $(<span class="hljs-string">'#Table1 tbody'</span>),
+        $scoreTable = $(<span class="hljs-string">'#DataGrid1'</span>),
+        $scoreTableHead = $(<span class="hljs-string">'#DataGrid1 .datelisthead'</span>),
+        $scoreRows = $(<span class="hljs-string">'#DataGrid1 tr'</span>).not(<span class="hljs-string">'.datelisthead'</span>);</pre></div></div>
             
         </li>
         
@@ -550,12 +547,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>绑定勾选事件，重新计算汇总栏</p>
+              <p>课程信息</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-string">'.lecture-check'</span>).change(renderSummarize);
-    $(<span class="hljs-string">'.lecture-check-all'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> lectures = Lecture.fromRows($scoreRows);</pre></div></div>
             
         </li>
         
@@ -566,11 +562,14 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>同步勾选状态</p>
+              <p>插入汇总栏: 平均绩点、平均分、加权平均分</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        $(<span class="hljs-string">'.lecture-check'</span>).prop(<span class="hljs-string">'checked'</span>, $(<span class="hljs-string">'.lecture-check-all'</span>).is(<span class="hljs-string">':checked'</span>));</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> $avgCell = $(<span class="hljs-string">'&lt;tr&gt;&lt;/tr&gt;'</span>).appendTo($infoRows),
+        $avgGPA = $(<span class="hljs-string">'&lt;td class="avg-gpa"&gt;&lt;/td&gt;'</span>).appendTo($avgCell),
+        $avgScore = $(<span class="hljs-string">'&lt;td class="avg-score"&gt;&lt;/td&gt;'</span>).appendTo($avgCell),
+        $weightedAvgScore = $(<span class="hljs-string">'&lt;td class="weighted-avg-score"&gt;&lt;/td&gt;'</span>).appendTo($avgCell);</pre></div></div>
             
         </li>
         
@@ -581,12 +580,9 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>触发重新计算</p>
+              <p>插入各行汇总栏: 绩点、学分绩点、是否加入计算</p>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>        renderSummarize();
-    });</pre></div></div>
             
         </li>
         
@@ -596,6 +592,153 @@
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>表头</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $(<span class="hljs-string">'&lt;td&gt;绩点&lt;/td&gt;'</span>).appendTo($scoreTableHead);
+    $(<span class="hljs-string">'&lt;td&gt;学分绩点&lt;/td&gt;'</span>).appendTo($scoreTableHead);
+    $(<span class="hljs-string">'&lt;td&gt;全选 &lt;input type="checkbox" class="lecture-check-all" /&gt;&lt;/td&gt;'</span>).appendTo($scoreTableHead);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>各行</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> rowCellsTmpl = [
+        <span class="hljs-string">'&lt;td class="gpa"&gt;&lt;/td&gt;'</span>,
+        <span class="hljs-string">'&lt;td class="credit-gpa"&gt;&lt;/td&gt;'</span>,
+        <span class="hljs-string">'&lt;td &gt;&lt;input type="checkbox" class="lecture-check"&gt;&lt;/input&gt;&lt;/td&gt;'</span>
+    ];
+    $(rowCellsTmpl.join(<span class="hljs-string">''</span>)).appendTo($scoreRows);
+
+    $scoreRows.each(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(i, row)</span> </span>{
+        <span class="hljs-keyword">var</span> $row = $(row),
+            lecture = lectures[i];
+
+        $row.find(<span class="hljs-string">'.gpa'</span>).text(lecture.gpa.toFixed(<span class="hljs-number">2</span>));
+        $row.find(<span class="hljs-string">'.credit-gpa'</span>).text(GPA.creditGPA(lecture).toFixed(<span class="hljs-number">2</span>));
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>重新计算汇总成绩</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> renderSummarize = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(lectures)</span> </span>{
+        <span class="hljs-keyword">var</span> checkedRows = $(<span class="hljs-string">'.lecture-check:checked'</span>).parent().parent(),
+            l = Lecture.fromRows(checkedRows);
+
+        $avgGPA.text(<span class="hljs-string">'平均绩点: '</span> + GPA.avgCreditGPA(l).toFixed(<span class="hljs-number">2</span>));
+        $avgScore.text(<span class="hljs-string">'平均分: '</span> + GPA.avgScore(l).toFixed(<span class="hljs-number">2</span>));
+        $weightedAvgScore.text(<span class="hljs-string">'加权平均分: '</span> + GPA.avgWeightedScore(l).toFixed(<span class="hljs-number">2</span>));
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>绑定各栏的勾选事件</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    $scoreRows.click(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
+        <span class="hljs-keyword">var</span> $checkbox = $(<span class="hljs-keyword">this</span>).find(<span class="hljs-string">'input'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>反转勾选状态</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $checkbox.prop(<span class="hljs-string">'checked'</span>, !$checkbox.prop(<span class="hljs-string">'checked'</span>));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>触发重新计算汇总栏</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        renderSummarize();
+    });
+
+    $(<span class="hljs-string">'.lecture-check-all'</span>).change(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>同步勾选状态</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $(<span class="hljs-string">'.lecture-check'</span>).prop(<span class="hljs-string">'checked'</span>, $(<span class="hljs-string">'.lecture-check-all'</span>).is(<span class="hljs-string">':checked'</span>));</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>触发重新计算汇总栏</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        renderSummarize();
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>手动标记为全选</p>
 
@@ -607,11 +750,11 @@
         </li>
         
         
-        <li id="section-28">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>记录成绩情况</p>
 
@@ -623,11 +766,11 @@
         </li>
         
         
-        <li id="section-29">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <h3 id="-">评价页面</h3>
 

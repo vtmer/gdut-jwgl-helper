@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>[gdut-jwgl-helper] So many tests, such correct code!</title>
+    <!-- 需要预先运行 npm install 来安装依赖 -->
+    <link rel="stylesheet" href="mocha/mocha.css">
+</head>
+<body>
+    <div id="mocha"></div>
+    <!-- 测试用例 -->
+    <div id="test-samples" style="display:none;">
+        <!-- 课程列表测试用例:开始 -->
+        <div id="lectures-table-sample">
+            <table class="datelist" cellspacing="0" cellpadding="3" border="0" id="DataGrid1" width="100%">
+                <tbody>
+                    <tr class="alt">
+		        <td>24100735</td>
+                        <td>计算机组成原理</td>
+                        <td>专业基础课</td>
+                        <td>96</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>3.5</td>
+                        <td>0</td>
+                    </tr>
+	            <tr>
+                        <td>03100826</td>
+                        <td>概率论与数理统计C</td>
+                        <td>专业基础课</td>
+                        <td>88</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>2.5</td>
+                        <td>0</td>
+                    </tr>
+                    <tr class="alt">
+                        <td>61105030</td>
+                        <td>高级英语听说</td>
+                        <td>校选修课</td>
+                        <td>78</td>
+                        <td>人文社会科学类</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>3.0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>24126816</td>
+                        <td>.Net架构与C#程序设计</td>
+                        <td>校选修课</td>
+                        <td>80</td>
+                        <td>工程技术基础类</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>1.5</td>
+                        <td>0</td>
+                    </tr>
+                    <tr class="alt">
+                        <td>02112315</td>
+                        <td>莎士比亚戏剧解读</td>
+                        <td>校选修课</td>
+                        <td>87</td>
+                        <td>人文社会科学类</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>1.5</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>       
+        </div>
+        <!-- 课程列表测试用例:结束 -->
+    </div>
+</body>
+<!-- 需要预先运行 npm install 来安装依赖 -->
+<script src="mocha/mocha.js"></script>
+<script src="should/should.js"></script>
+<script>
+    // 配置 mocha
+    mocha.setup('bdd');
+</script>
+<script src="../vendor/jquery.min.js"></script>
+<script src="../gdut-jwgl-helper.js"></script>
+<script src="hello.js"></script>
+<script src="page.js"></script>
+<script src="lecture.js"></script>
+<script src="gpa.js"></script>
+<script>
+    // 执行测试
+    mocha.checkLeaks();
+    mocha.globals(['jQuery']);
+    mocha.run();
+</script>
+</html>
