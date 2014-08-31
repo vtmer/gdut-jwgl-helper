@@ -10,7 +10,10 @@ module.exports = function (grunt) {
             src: './src',
             manifest: './src/manifest',
             build: './build',
-            dist: './'
+            dist: './',
+            test: './src/test',
+            docs: './docs',
+            nodeModules: './node_modules'
         },
 
         // 任务配置
@@ -26,6 +29,22 @@ module.exports = function (grunt) {
                     '<%= dir.src %>/gdut-jwgl-helper.js'
                 ],
                 dest: '<%= dir.build %>/gdut-jwgl-helper.gm.js'
+            }
+        },
+
+        connect: {
+            // 执行测试
+            test: {
+                options: {
+                    base: [
+                        '<%= dir.src %>',
+                        '<%= dir.test %>',
+                        '<%= dir.nodeModules %>',
+                        '<%= dir.docs %>'
+                    ],
+                    port: 9000,
+                    useAvailabePort: true
+                }
             }
         },
 
@@ -90,6 +109,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-shell');
 
@@ -120,8 +140,16 @@ module.exports = function (grunt) {
         'copy:publish_crx'
     ]);
 
-    // 默认任务：检测代码改动并自动打包
+    // 测试任务
+    grunt.registerTask('test', [
+        'connect:test:keepalive'
+    ]);
+
+    // 默认任务：
+    //  - 运行测试用例的静态服务器
+    //  - 检测代码改动并自动打包
     grunt.registerTask('default', [
+        'connect:test',
         'watch:src'
     ]);
 
