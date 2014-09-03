@@ -116,6 +116,7 @@ var GPA = {
     // 从分数或等级计算绩点
     //
     // 绩点计算公式：
+    //      
     //      GPA = (s - 50) / 10         (s >= 60)
     //            0                     (s < 60)
     fromScoreOrGradeLevel: function (score) {
@@ -127,6 +128,7 @@ var GPA = {
     // 计算一门课程的学分绩点
     //
     // 计算公式：
+    //      
     //      CreditGPA = Credit * GPA      
     creditGPA: function (lecture) { return lecture.credit * lecture.gpa },
 
@@ -335,6 +337,23 @@ page.on('xscj.aspx', function () {
 
 // ### 评价页面
 page.on('xsjpj.aspx', function() {
+});
+
+
+// ### Object moved to here 页面
+page.on('content.aspx', function() {
+    var isObjectMoved = $('body h2').text().search('Object moved') !== -1;
+
+    // 重定向到首页登录页
+    if (isObjectMoved) {
+        location.href = 'http://' + location.host;
+    }
+});
+
+
+// ### 莫名其妙错误页 _(:з」∠)_
+page.on('zdy.htm', function() {
+    location.href = 'http://' + location.host;
 });
 
 

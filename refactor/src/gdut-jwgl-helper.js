@@ -325,4 +325,21 @@ page.on('xsjpj.aspx', function() {
 });
 
 
+// ### Object moved to here 页面
+page.on('content.aspx', function() {
+    var isObjectMoved = $('body h2').text().search('Object moved') !== -1;
+
+    // 重定向到首页登录页
+    if (isObjectMoved) {
+        location.href = 'http://' + location.host;
+    }
+});
+
+
+// ### 莫名其妙错误页 _(:з」∠)_
+page.on('zdy.htm', function() {
+    location.href = 'http://' + location.host;
+});
+
+
 page.run();
