@@ -30,6 +30,11 @@
               <h2 id="-">页面地址路由</h2>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> page = <span class="hljs-keyword">new</span> Page;
 
+ <span class="hljs-comment">// 挂载预先运行回调</span>
+ page.before(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Allo!'</span>);
+ });
+
  <span class="hljs-comment">// 挂载对应页面的回调</span>
  page.on(<span class="hljs-string">'/a/page/that/i/will/edit'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'in page: a-page-that-i-will-edit'</span>);
@@ -60,6 +65,21 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
+              <p>预先运行的回调函数组</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>._beforeRoutes = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
               <p>回调函数组</p>
 
             </div>
@@ -70,11 +90,30 @@
         </li>
         
         
-        <li id="section-3">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>注册一个预先运行的回调函数</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Page.prototype.before = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(callback)</span> </span>{
+    <span class="hljs-keyword">this</span>._beforeRoutes.push(callback);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>注册一个回调函数</p>
 
@@ -104,11 +143,11 @@
         </li>
         
         
-        <li id="section-4">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>进行匹配、运行对应回调函数</p>
 
@@ -119,11 +158,11 @@
         </li>
         
         
-        <li id="section-5">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>默认使用不带最开始 back slash 的 <code>location.pathname</code></p>
 
@@ -131,9 +170,39 @@
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (url === <span class="hljs-literal">undefined</span>) {
         url = location.pathname.slice(<span class="hljs-number">1</span>, location.pathname.length);
-    }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>执行预先运行的回调函数组</p>
 
-    <span class="hljs-keyword">var</span> matchedParts,
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>._beforeRoutes.length; i++) {
+        <span class="hljs-keyword">this</span>._beforeRoutes[i]();
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>检查是否有满足条件的回调函数</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> matchedParts,
         foundMatched = <span class="hljs-literal">false</span>;
 
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> pattern <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>._routes) {
@@ -142,11 +211,11 @@
         </li>
         
         
-        <li id="section-6">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>找到匹配的，执行已注册的回调函数</p>
 
@@ -169,11 +238,11 @@
         </li>
         
         
-        <li id="section-7">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <h2 id="gpa-">GPA 计算器</h2>
 
@@ -184,11 +253,11 @@
         </li>
         
         
-        <li id="section-8">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>等级对应成绩</p>
 <ul>
@@ -213,11 +282,11 @@
         </li>
         
         
-        <li id="section-9">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>没有填写的情况当作 0 （出现在重修栏）</p>
 
@@ -230,11 +299,11 @@
         </li>
         
         
-        <li id="section-10">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>从分数或等级计算绩点</p>
 <p>绩点计算公式：</p>
@@ -252,11 +321,11 @@
         </li>
         
         
-        <li id="section-11">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>计算一门课程的学分绩点</p>
 <p>计算公式：</p>
@@ -269,11 +338,11 @@
         </li>
         
         
-        <li id="section-12">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>计算若干门课程的总绩点</p>
 
@@ -288,11 +357,11 @@
         </li>
         
         
-        <li id="section-13">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>计算若干门课程的平均分</p>
 
@@ -311,11 +380,11 @@
         </li>
         
         
-        <li id="section-14">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>计算若干门课程的平均学分绩点</p>
 
@@ -336,11 +405,11 @@
         </li>
         
         
-        <li id="section-15">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>计算若干门课程的加权平均分</p>
 
@@ -362,11 +431,11 @@
         </li>
         
         
-        <li id="section-16">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <h2 id="-">课程成绩记录定义</h2>
 <ul>
@@ -405,11 +474,11 @@
         </li>
         
         
-        <li id="section-17">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>从 <code>table tr</code> 中获取一个课程信息</p>
 
@@ -447,11 +516,11 @@
         </li>
         
         
-        <li id="section-18">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>从 <code>table</code> 中获取一系列课程信息</p>
 
@@ -464,11 +533,85 @@
         </li>
         
         
-        <li id="section-19">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h2 id="-">评价生成器</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> RatingMaker = {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>创建一个包含 n 个<strong>不全部</strong>相同元素的序列
+取值范围为： [lo, hi) 间的整数</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    makeSequenceBetween: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(n, lo, hi)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>确保生成序列中的元素不全部相同</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> [];
+        <span class="hljs-keyword">if</span> (lo &gt;= hi - <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> [];
+
+        <span class="hljs-keyword">var</span> length = hi - lo,
+            seq = [],
+            x;
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>生成一个在 [lo, hi - 1] 范围内的整数</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            x = <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * length) + lo;
+            seq.push(x);
+        }
+
+        <span class="hljs-keyword">return</span> seq;
+    }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <h2 id="-">助手部分</h2>
 
@@ -480,11 +623,45 @@
         </li>
         
         
-        <li id="section-20">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h3 id="-object-moved-">检查是否为 <code>Object moved</code> 页</h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>page.before(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> isObjectMoved = $(<span class="hljs-string">'body h2'</span>).text().search(<span class="hljs-string">'Object moved'</span>) !== -<span class="hljs-number">1</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>重定向到首页登录页</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (isObjectMoved) {
+        location.href = <span class="hljs-string">'http://'</span> + location.host;
+    }
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <h3 id="-">登录页</h3>
 
@@ -495,11 +672,11 @@
         </li>
         
         
-        <li id="section-21">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <h3 id="-">成绩页面</h3>
 
@@ -508,11 +685,11 @@
         </li>
         
         
-        <li id="section-22">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>计算 GPA</p>
 
@@ -523,11 +700,11 @@
         </li>
         
         
-        <li id="section-23">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>页面元素</p>
 
@@ -541,11 +718,11 @@
         </li>
         
         
-        <li id="section-24">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>课程信息</p>
 
@@ -556,11 +733,11 @@
         </li>
         
         
-        <li id="section-25">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>插入汇总栏: 平均绩点、平均分、加权平均分</p>
 
@@ -574,11 +751,11 @@
         </li>
         
         
-        <li id="section-26">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>插入各行汇总栏: 绩点、学分绩点、是否加入计算</p>
 
@@ -587,11 +764,11 @@
         </li>
         
         
-        <li id="section-27">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>表头</p>
 
@@ -604,11 +781,11 @@
         </li>
         
         
-        <li id="section-28">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>各行</p>
 
@@ -632,11 +809,11 @@
         </li>
         
         
-        <li id="section-29">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>重新计算汇总成绩</p>
 
@@ -654,11 +831,11 @@
         </li>
         
         
-        <li id="section-30">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>绑定各栏的勾选事件</p>
 
@@ -670,11 +847,11 @@
         </li>
         
         
-        <li id="section-31">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>反转勾选状态</p>
 
@@ -685,11 +862,11 @@
         </li>
         
         
-        <li id="section-32">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>触发重新计算汇总栏</p>
 
@@ -703,11 +880,11 @@
         </li>
         
         
-        <li id="section-33">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <p>同步勾选状态</p>
 
@@ -718,11 +895,11 @@
         </li>
         
         
-        <li id="section-34">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <p>触发重新计算汇总栏</p>
 
@@ -734,11 +911,11 @@
         </li>
         
         
-        <li id="section-35">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>手动标记为全选</p>
 
@@ -750,11 +927,11 @@
         </li>
         
         
-        <li id="section-36">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>记录成绩情况</p>
 
@@ -766,17 +943,103 @@
         </li>
         
         
-        <li id="section-37">
+        <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <h3 id="-">评价页面</h3>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>page.on(<span class="hljs-string">'xsjpj.aspx'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">var</span> $btnsGroup = $($(<span class="hljs-string">'td'</span>)[<span class="hljs-number">1</span>]),
+        $selections = $(<span class="hljs-string">'select'</span>),
+        $btnSave = $(<span class="hljs-string">'#Button1'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>创建一个评价按钮</p>
+<p>其中：</p>
+<ul>
+<li>text: 按钮文字</li>
+<li>choiceMake: 选项选择回调函数，接受一个 $selections 选项</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> makeBtn = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(text, choiceMaker)</span> </span>{
+        <span class="hljs-keyword">var</span> $btn = $(<span class="hljs-string">'&lt;input type="button" /&gt;'</span>);
+
+        $btn.val(text).css(<span class="hljs-string">'margin'</span>, <span class="hljs-string">'5px'</span>);
+
+        $btn.click(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{
+            choiceMaker($selections);
+
+            $btnSave.click();
+        });
+
+        $btn.appendTo($btnsGroup);
+
+        <span class="hljs-keyword">return</span> $btn;
+    };
+
+    makeBtn(<span class="hljs-string">'老师我爱你'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($choices)</span> </span>{
+        <span class="hljs-keyword">var</span> seq = RatingMaker.makeSequenceBetween($choices.length, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>);
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; seq.length; i++) {
+            $choices[i].selectedIndex = seq[i] - <span class="hljs-number">1</span>;
+        }
+    });
+
+    makeBtn(<span class="hljs-string">'老师我恨你'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($choices)</span> </span>{
+        <span class="hljs-keyword">var</span> seq = RatingMaker.makeSequenceBetween($choices.length, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>);
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; seq.length; i++) {
+            $choices[i].selectedIndex = seq[i] - <span class="hljs-number">1</span>;
+        }
+    });
+
+    makeBtn(<span class="hljs-string">'老师祝你好运吧！(和谐版)'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($choices)</span> </span>{
+        <span class="hljs-keyword">var</span> seq = RatingMaker.makeSequenceBetween($choices.length, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>);
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; seq.length; i++) {
+            $choices[i].selectedIndex = seq[i] - <span class="hljs-number">1</span>;
+        }
+    });
+
+    makeBtn(<span class="hljs-string">'老师祝你好运吧！(凶残版)'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($choices)</span> </span>{
+        <span class="hljs-keyword">var</span> seq = RatingMaker.makeSequenceBetween($choices.length, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>);
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; seq.length; i++) {
+            $choices[i].selectedIndex = seq[i] - <span class="hljs-number">1</span>;
+        }
+    });
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <h3 id="-_-_">莫名其妙错误页 <em>(:з」∠)</em></h3>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>page.on(<span class="hljs-string">'zdy.htm'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+    location.href = <span class="hljs-string">'http://'</span> + location.host;
 });
 
 
