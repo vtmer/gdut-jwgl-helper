@@ -24,7 +24,7 @@ gdut-jwgl-helper
 
 ## 安裝
 
-[脚本地址](http://raw.github.com/vtmer/gdut-jwgl-helper/master/gdut-jwgl-helper.js)
+[脚本地址](http://raw.github.com/vtmer/gdut-jwgl-helper/master/gdut-jwgl-helper.0.2.0js)
 
 ### Chrome / Chromium / 猎豹 / 360
 
@@ -36,7 +36,7 @@ gdut-jwgl-helper
 
 #### 方案二：
 
-安装 [Chrome插件](https://github.com/vtmer/gdut-jwgl-helper/blob/master/gdut-jwgl-helper.crx?raw=true)，
+安装 [Chrome插件](https://github.com/vtmer/gdut-jwgl-helper/blob/master/gdut-jwgl-helper.0.2.0.crx?raw=true)，
 因为暂时还未在 Chrome Web Store 上架，所以先手拖到 chrome://extensions 安装吧 :)
 
 
@@ -49,4 +49,4 @@ gdut-jwgl-helper
 
 [@Link](http://weibo.com/linkjie)
 
-[@hbc](http://www.douban.com/people/minibc)
+[@hbc](https://github.com/bcho)
