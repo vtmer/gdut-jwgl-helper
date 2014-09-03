@@ -3,6 +3,11 @@
 // ```javascript
 // var page = new Page;
 //
+//  // 挂载预先运行回调
+//  page.before(function () {
+//      console.log('Allo!');
+//  });
+//
 //  // 挂载对应页面的回调
 //  page.on('/a/page/that/i/will/edit', function () {
 //      console.log('in page: a-page-that-i-will-edit');
@@ -21,9 +26,19 @@
 //
 // ```
 function Page() {
+    // 预先运行的回调函数组
+    this._beforeRoutes = [];
+
     // 回调函数组
     this._routes = {};
 }
+
+// 注册一个预先运行的回调函数
+Page.prototype.before = function (callback) {
+    this._beforeRoutes.push(callback);
+
+    return this;
+};
 
 // 注册一个回调函数
 Page.prototype.on = function (pattern, callback) {
@@ -54,6 +69,12 @@ Page.prototype.run = function (url) {
         url = location.pathname.slice(1, location.pathname.length);
     }
 
+    // 执行预先运行的回调函数组
+    for (var i = 0; i < this._beforeRoutes.length; i++) {
+        this._beforeRoutes[i]();
+    }
+
+    // 检查是否有满足条件的回调函数
     var matchedParts,
         foundMatched = false;
 
@@ -230,6 +251,16 @@ Lecture.fromRows = function (rows) {
 
 var page = new Page;
 
+// ### 检查是否为 `Object moved` 页
+page.before(function () {
+    var isObjectMoved = $('body h2').text().search('Object moved') !== -1;
+
+    // 重定向到首页登录页
+    if (isObjectMoved) {
+        location.href = 'http://' + location.host;
+    }
+});
+
 
 // ### 登录页
 page.on('default2.aspx', function () {});
@@ -322,17 +353,6 @@ page.on('xscj.aspx', function () {
 
 // ### 评价页面
 page.on('xsjpj.aspx', function() {
-});
-
-
-// ### Object moved to here 页面
-page.on('content.aspx', function() {
-    var isObjectMoved = $('body h2').text().search('Object moved') !== -1;
-
-    // 重定向到首页登录页
-    if (isObjectMoved) {
-        location.href = 'http://' + location.host;
-    }
 });
 
 

@@ -1,6 +1,24 @@
 describe('page', function () {
     var testCallback = function () { return 'test callback'; };
 
+    describe('before', function () {
+        it('should return page for chain usage', function () {
+            var page = new Page;
+            page.before(testCallback).should.exactly(page);
+        });
+
+        it('should run every time', function () {
+            var page = new Page,
+                outsider = 41,
+                updateOutsider = function () { outsider += 1; };
+
+            page.before(updateOutsider);
+            page.run('some-where');
+
+            outsider.should.equal(42);
+        });
+    });
+
     describe('on', function () {
         it('should return page for chain usage', function () {
             var page = new Page;
