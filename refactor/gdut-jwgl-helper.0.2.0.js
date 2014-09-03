@@ -262,6 +262,30 @@ Lecture.fromRows = function (rows) {
 };
 
 
+// ## 评价生成器
+var RatingMaker = {
+    // 创建一个包含 n 个**不全部**相同元素的序列
+    // 取值范围为： [lo, hi) 间的整数
+    makeSequenceBetween: function (n, lo, hi) {
+        // 确保生成序列中的元素不全部相同
+        if (n <= 1) return [];
+        if (lo >= hi - 1) return [];
+
+        var length = hi - lo,
+            seq = [],
+            x;
+
+        for (var i = 0; i < n; i++) {
+            // 生成一个在 [lo, hi - 1] 范围内的整数
+            x = parseInt(Math.random() * length, 10) + lo;
+            seq.push(x);
+        }
+
+        return seq;
+    }
+};
+
+
 // ## 助手部分
 
 var page = new Page;
@@ -368,6 +392,62 @@ page.on('xscj.aspx', function () {
 
 // ### 评价页面
 page.on('xsjpj.aspx', function() {
+    var $btnsGroup = $($('td')[1]),
+        $selections = $('select'),
+        $btnSave = $('#Button1');
+
+    // 创建一个评价按钮
+    //
+    // 其中：
+    // - text: 按钮文字
+    // - choiceMake: 选项选择回调函数，接受一个 $selections 选项
+    var makeBtn = function (text, choiceMaker) {
+        var $btn = $('<input type="button" />');
+
+        $btn.val(text).css('margin', '5px');
+
+        $btn.click(function (e) {
+            choiceMaker($selections);
+
+            $btnSave.click();
+        });
+
+        $btn.appendTo($btnsGroup);
+
+        return $btn;
+    };
+
+    makeBtn('老师我爱你', function ($choices) {
+        var seq = RatingMaker.makeSequenceBetween($choices.length, 1, 3);
+
+        for (var i = 0; i < seq.length; i++) {
+            $choices[i].selectedIndex = seq[i];
+        }
+    });
+
+    makeBtn('老师我恨你', function ($choices) {
+        var seq = RatingMaker.makeSequenceBetween($choices.length, 4, 6);
+
+        for (var i = 0; i < seq.length; i++) {
+            $choices[i].selectedIndex = seq[i];
+        }
+    });
+
+    makeBtn('老师祝你好运吧！(和谐版)', function ($choices) {
+        var seq = RatingMaker.makeSequenceBetween($choices.length, 1, 4);
+
+        for (var i = 0; i < seq.length; i++) {
+            $choices[i].selectedIndex = seq[i];
+        }
+    });
+
+    makeBtn('老师祝你好运吧！(凶残版)', function ($choices) {
+        var seq = RatingMaker.makeSequenceBetween($choices.length, 3, 6);
+
+        for (var i = 0; i < seq.length; i++) {
+            $choices[i].selectedIndex = seq[i];
+        }
+    });
 });
 
 
