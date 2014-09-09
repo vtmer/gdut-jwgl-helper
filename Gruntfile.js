@@ -80,10 +80,12 @@ module.exports = function (grunt) {
         shell: {
             build_crx: {
                 command: function () {
-                    var pem = grunt.template.process(
+                    // 可以使用命令行参数 ``--chrome`` 来指定打包使用的 chrome
+                    var chrome = grunt.option('chrome') || 'chromium',
+                        pem = grunt.template.process(
                             '<%= dir.manifest %>/gdut-jwgl-helper.pem'
                     ),
-                        cmd = 'chromium --pack-extension=<%= dir.build %>/crx';
+                        cmd = chrome + ' --pack-extension=<%= dir.build %>/crx';
 
                     if (grunt.file.exists(pem)) {
                         cmd += ' --pack-extension-key=' + pem;
