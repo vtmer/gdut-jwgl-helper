@@ -391,7 +391,7 @@ page.on('xscj.aspx', function () {
 
 
 // ### 评价页面
-page.on('xsjpj.aspx', function() {
+page.on('xsjxpj.aspx', function() {
     var $btnsGroup = $($('td')[1]),
         $selections = $('select'),
         $btnSave = $('#Button1');
@@ -421,7 +421,7 @@ page.on('xsjpj.aspx', function() {
         var seq = RatingMaker.makeSequenceBetween($choices.length, 1, 3);
 
         for (var i = 0; i < seq.length; i++) {
-            $choices[i].selectedIndex = seq[i] - 1;
+            $choices[i].selectedIndex = seq[i];
         }
     });
 
@@ -429,7 +429,7 @@ page.on('xsjpj.aspx', function() {
         var seq = RatingMaker.makeSequenceBetween($choices.length, 4, 6);
 
         for (var i = 0; i < seq.length; i++) {
-            $choices[i].selectedIndex = seq[i] - 1;
+            $choices[i].selectedIndex = seq[i];
         }
     });
 
@@ -437,7 +437,7 @@ page.on('xsjpj.aspx', function() {
         var seq = RatingMaker.makeSequenceBetween($choices.length, 1, 4);
 
         for (var i = 0; i < seq.length; i++) {
-            $choices[i].selectedIndex = seq[i] - 1;
+            $choices[i].selectedIndex = seq[i];
         }
     });
 
@@ -445,7 +445,7 @@ page.on('xsjpj.aspx', function() {
         var seq = RatingMaker.makeSequenceBetween($choices.length, 3, 6);
 
         for (var i = 0; i < seq.length; i++) {
-            $choices[i].selectedIndex = seq[i] - 1;
+            $choices[i].selectedIndex = seq[i];
         }
     });
 });
