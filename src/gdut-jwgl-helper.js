@@ -376,7 +376,7 @@ page.on('xscj.aspx', function () {
 
 
 // ### 评价页面
-page.on('xsjpj.aspx', function() {
+page.on('xsjxpj.aspx', function() {
     var $btnsGroup = $($('td')[1]),
         $selections = $('select'),
         $btnSave = $('#Button1');
