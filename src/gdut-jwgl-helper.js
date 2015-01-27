@@ -378,7 +378,7 @@ page.on('xscj.aspx', function () {
 // ### 评价页面
 page.on('xsjxpj.aspx', function() {
     var $btnsGroup = $($('td')[1]),
-        $selections = $('select'),
+        $selections = $('#trPjs select, #trPjc select'),
         $btnSave = $('#Button1');
 
     // 创建一个评价按钮
