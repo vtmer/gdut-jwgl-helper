@@ -278,10 +278,8 @@ var RatingMaker = {
 
         for (var i = 0; i < n; i++) {
             seq.push(x + lo);
-            x = (x + 1) % length
+            x = (x + 1) % length;
         }
-
-        console.log(seq)
 
         return seq;
     }
