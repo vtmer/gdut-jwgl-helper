@@ -273,13 +273,15 @@ var RatingMaker = {
 
         var length = hi - lo,
             seq = [],
-            x;
+            // 生成一个在 [0, length] 范围内的整数
+            x = Math.floor(Math.random() * length);
 
         for (var i = 0; i < n; i++) {
-            // 生成一个在 [lo, hi - 1] 范围内的整数
-            x = Math.floor(Math.random() * length) + lo;
-            seq.push(x);
+            seq.push(x + lo);
+            x = (x + 1) % length
         }
+
+        console.log(seq)
 
         return seq;
     }
