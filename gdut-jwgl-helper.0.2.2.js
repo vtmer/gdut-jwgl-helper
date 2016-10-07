@@ -99,7 +99,7 @@ Page.prototype.run = function (url) {
         // 找到匹配的，执行已注册的回调函数
         if (matchedParts !== null) {
             foundMatched = true;
-            
+
             matchedParts.shift();
 
             this._routes[pattern].callbacks.forEach(function (callback) {
@@ -137,7 +137,7 @@ var GPA = {
     // 从分数或等级计算绩点
     //
     // 绩点计算公式：
-    //      
+    //
     //      GPA = (s - 50) / 10         (s >= 60)
     //            0                     (s < 60)
     fromScoreOrGradeLevel: function (score) {
@@ -149,8 +149,8 @@ var GPA = {
     // 计算一门课程的学分绩点
     //
     // 计算公式：
-    //      
-    //      CreditGPA = Credit * GPA      
+    //
+    //      CreditGPA = Credit * GPA
     creditGPA: function (lecture) { return lecture.credit * lecture.gpa },
 
     // 计算若干门课程的总绩点
@@ -199,7 +199,7 @@ var GPA = {
 };
 
 // ## 课程成绩记录定义
-// 
+//
 // * code        :  课程代码
 // * name        :  课程名称
 // * type        :  课程性质（公共基础？专业基础？）
@@ -234,7 +234,7 @@ Lecture.fromTableRow = function (row) {
         _parseFloatOrText = _f = function (x) {
             var parsedText = _parseText(x),
                 parsedFloat = parseFloat(parsedText);
-            
+
             return isNaN(parsedFloat) ? parsedText : parsedFloat;
         };
 
@@ -328,7 +328,7 @@ page.on('xscj.aspx', function () {
 
 
     // 插入各行汇总栏: 绩点、学分绩点、是否加入计算
-    
+
     // 表头
     $('<td>绩点</td>').appendTo($scoreTableHead);
     $('<td>学分绩点</td>').appendTo($scoreTableHead);
@@ -450,6 +450,223 @@ page.on('xsjxpj.aspx', function() {
     });
 });
 
+// ### 学生个人课表
+page.on('xskbcx.aspx', function() {
+    if (!Date.prototype.toISOString) {
+        (function() {
+
+            function pad(number) {
+                if (number < 10) {
+                    return '0' + number;
+                }
+                return number;
+            }
+
+            Date.prototype.toISOString = function() {
+                return this.getUTCFullYear() +
+                    '-' + pad(this.getUTCMonth() + 1) +
+                    '-' + pad(this.getUTCDate()) +
+                    'T' + pad(this.getUTCHours()) +
+                    ':' + pad(this.getUTCMinutes()) +
+                    ':' + pad(this.getUTCSeconds()) +
+                    '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+                    'Z';
+            };
+
+        }());
+    }
+
+    function addDays(date, days) {
+        date.setDate(date.getDate() + days);
+    }
+
+    function getTime(order) {
+        var arr = [];
+        var start = ["8:30", "9:20", "10:25", "11:15", "13:50", "14:40", "15:30", "16:30", "17:20", "18:30", "19:20", "20:10"];
+        var end = ["9:15", "10:05", "11:10", "12:00", "14:35", "15:25", "16:15", "17:15", "18:05", "19:15", "20:05", "20:55"];
+        arr.push(start[order[0] - 1]);
+        arr.push(end[order[order.length - 1] - 1]);
+        return arr;
+    }
+
+    function getCourseDate(startDay, weekOffset, dayOffset) {
+        var courseDate = new Date(startDay);
+        addDays(courseDate, dayOffset);
+        addDays(courseDate, weekOffset * 7);
+        return courseDate;
+    }
+
+    function parseDate(date) {
+        function pad(number) {
+            if (number < 10) {
+                return '0' + number;
+            }
+            return number;
+        }
+
+        return date.getFullYear() +
+            '-' + pad(date.getMonth() + 1) +
+            '-' + pad(date.getDate());
+    }
+
+    function getCourseTime(startDay, weekOffset, dayOffset, time) {
+        var date = getCourseDate(startDay, weekOffset, dayOffset);
+        var t = time.split(':');
+        date.setHours(t[0], t[1]);
+        return date.toISOString().replace(/\.\d\d\d/, "").replace(/[-:]/g, "");
+    }
+
+    /* 获取数据 */
+    function getData() {
+        var table = document.getElementById("Table1");
+        var c = [];
+        var i, j, k;
+        for (i = 2; i < 12; i++) {
+            var row = table.rows[i];
+            var length = row.cells.length;
+            if (length < 4) continue;
+            for (j = 1; j < length; j++) {
+                var cell = row.cells[j].innerHTML;
+                if (cell.length < 40) continue;
+                var arrs = cell.split(/<br[^<]*><br[^<]*>/);
+                for (k = 0; k < arrs.length; k += 1) {
+                    var e = arrs[k].split(/<br[^<]*>/);
+                    c.push(e);
+                }
+            }
+        }
+        return c;
+    }
+
+    function getCSV(startDay) {
+        var i, j;
+        var c = getData();
+        var result = "Subject,Start Date,Start Time,End Date,End Time,Location\n";
+        /* 生成结果 */
+        for (i = 0; i < c.length; i++) {
+            var t = c[i][1];
+            /* 获取课程在一周内的偏移 */
+            var dayOffset = "一二三四五六日".indexOf(t.charAt(1));
+            /* 获取节次 */
+            var classOrder = t.match(/第.*节/)[0].slice(1, -1).split(',');
+            /* 获取上课和下课时间 */
+            var time = getTime(classOrder);
+            /* 获取周次 */
+            var weeks = t.match(/{.*}/)[0].slice(2, -2).split('-');
+
+            /* 生成csv */
+            for (j = weeks[0] - 1; j < weeks[1]; j++) {
+                var arr = [];
+                var date = parseDate(getCourseDate(startDay, j, dayOffset));
+                arr.push(c[i][0]);
+                arr.push(date);
+                arr.push(time[0]);
+                arr.push(date);
+                arr.push(time[1]);
+                arr.push(c[i][3]);
+                result += arr.join(',') + '\n';
+            }
+        }
+        return result;
+    }
+
+    function getICS(startDay) {
+        var i, j;
+        var c = getData();
+        var result = "BEGIN:VCALENDAR\nPRODID:-//dgeibi/gdut-jwgl-helper//Calendar 1.0//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:课程表\nX-WR-TIMEZONE:Asia/Shanghai\n";
+        /* 生成结果 */
+        for (i = 0; i < c.length; i++) {
+            var t = c[i][1];
+            /* 获取课程在一周内的偏移 */
+            var dayOffset = "一二三四五六日".indexOf(t.charAt(1));
+            /* 获取节次 */
+            var classOrder = t.match(/第.*节/)[0].slice(1, -1).split(',');
+            /* 获取上课和下课时间 */
+            var time = getTime(classOrder);
+            /* 获取周次 */
+            var weeks = t.match(/{.*}/)[0].slice(2, -2).split('-');
+
+            /* 生成ics*/
+            for (j = weeks[0] - 1; j < weeks[1]; j++) {
+                result += "BEGIN:VEVENT\n";
+                result += "DTSTART:" + getCourseTime(startDay, j, dayOffset, time[0]) + "\n";
+                result += "DTEND:" + getCourseTime(startDay, j, dayOffset, time[1]) + "\n";
+                result += "LOCATION:" + c[i][3] + "\n";
+                result += "SUMMARY:" + c[i][0] + "\n";
+                result += "END:VEVENT\n";
+            }
+        }
+        result += "END:VCALENDAR\n";
+        return result;
+    }
+
+    /* 用于返回回调函数的函数 */
+    var getGenerateFunc = function(fileType) {
+        var func = null;
+        var exName = "";
+        var mime = "";
+        if (fileType.toLowerCase() === "ics") {
+            func = getICS;
+            exName = "ics";
+            mime = "text/calendar";
+        } else {
+            func = getCSV;
+            exName = "csv";
+            mime = "text/csv";
+        }
+        var clickFunc = function() {
+            var value = startDayC.value;
+            if (!/^(?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)$/.test(value)) {
+                alert('你输入的日期无效！请输入有效的日期，如 "2016-08-29"');
+                return;
+            }
+            var url = "data:" + mime + ";charset=utf-8," + encodeURIComponent(func(value));
+            var fileName = "curriculum." + exName;
+            var link = document.createElement("a");
+            if (link.download !== undefined) {
+                link.setAttribute("href", url);
+                link.setAttribute("download", fileName);
+                var event = new MouseEvent('click');
+                link.dispatchEvent(event);
+            }
+        };
+        return clickFunc;
+    };
+
+    var bar = document.getElementById("Table2");
+    var barRow = bar.insertRow(bar.length);
+
+    /* 创建输入开学日期的文本框 */
+    var startDayC = document.createElement("input");
+    startDayC.type = "text";
+    startDayC.size = 10;
+    startDayC.maxLength = 10;
+    startDayC.value = "2016-08-29";
+    startDayC.onfocus = function(event) {
+        event.target.select();
+    };
+    var label = document.createElement("label");
+    label.innerText = "开学第一天：";
+    label.appendChild(startDayC);
+    barRow.insertCell(0).appendChild(label);
+
+    /* 创建按钮 */
+    var btn = document.createElement("input");
+    btn.type = "button";
+    btn.style.cursor = "pointer";
+    btn.style.margin = "0 0 0 10px";
+    btn.value = "导出 CSV";
+    btn.onclick = getGenerateFunc("csv");
+    barRow.cells[0].appendChild(btn);
+
+    btn = document.createElement("input");
+    btn.type = "button";
+    btn.style.cursor = "pointer";
+    btn.style.margin = "0 0 0 10px";
+    btn.value = "导出 ICS";
+    btn.onclick = getGenerateFunc("ics");
+    barRow.cells[0].appendChild(btn);
+});
 
 // ### 莫名其妙错误页 _(:з」∠)_
 page.on('zdy.htm', function() {
