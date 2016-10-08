@@ -23,7 +23,7 @@ gdut-jwgl-helper
 ### 导出学生课程表
 可以导出 ics 和 csv 文件。你可以将 csv/ics 文件导入到日历软件中。
 
-![学生课程表](https://raw.github.com/dgeibi/gdut-jwgl-helper/master/image/curriculum.png)
+![学生课程表](https://raw.github.com/vtmer/gdut-jwgl-helper/master/image/curriculum.png)
 
 ## 安裝
 
