@@ -466,9 +466,9 @@ page.on('xskbcx.aspx', function() {
     }
 
     function getTime(order) {
-        var arr = [];
-        var start = ["8:30", "9:20", "10:25", "11:15", "13:50", "14:40", "15:30", "16:30", "17:20", "18:30", "19:20", "20:10"];
-        var end = ["9:15", "10:05", "11:10", "12:00", "14:35", "15:25", "16:15", "17:15", "18:05", "19:15", "20:05", "20:55"];
+        var arr = [],
+            start = ["8:30", "9:20", "10:25", "11:15", "13:50", "14:40", "15:30", "16:30", "17:20", "18:30", "19:20", "20:10"],
+            end = ["9:15", "10:05", "11:10", "12:00", "14:35", "15:25", "16:15", "17:15", "18:05", "19:15", "20:05", "20:55"];
         arr.push(start[order[0] - 1]);
         arr.push(end[order[order.length - 1] - 1]);
         return arr;
@@ -481,7 +481,7 @@ page.on('xskbcx.aspx', function() {
         return courseDate;
     }
 
-    function parseDate(date) {
+    function stringifyDate(date) {
         function pad(number) {
             if (number < 10) {
                 return '0' + number;
@@ -495,60 +495,65 @@ page.on('xskbcx.aspx', function() {
     }
 
     function getCourseTime(startDay, weekOffset, dayOffset, time) {
-        var date = getCourseDate(startDay, weekOffset, dayOffset);
-        var t = time.split(':');
+        var date = getCourseDate(startDay, weekOffset, dayOffset),
+            t = time.split(':');
         date.setHours(t[0], t[1]);
         return date.toISOString().replace(/\.\d\d\d/, "").replace(/[-:]/g, "");
     }
 
-    /* 获取数据 */
+    /**
+     * data 的元素也是数组
+     *   0:"数字逻辑与系统设计"  // 课程名称
+     *   1:"周一第3,4节{第1-4周}"// 上课时间
+     *   2:"xxx"                 // 老师
+     *   3:"教3-412"             // 上课地点
+     *   4:"2016年12月27日(14:00-16:00)" // 课程考试时间
+     *   5:"教2-314"                     // 课程考试地点
+     */
     function getData() {
-        var table = document.getElementById("Table1");
-        var c = [];
-        var i, j, k;
-        for (i = 2; i < 12; i++) {
-            var row = table.rows[i];
-            var length = row.cells.length;
+        var table = document.getElementById("Table1"),
+            data = [];
+
+        for (var i = 2; i < 12; i++) {
+            var row = table.rows[i],
+                length = row.cells.length;
             if (length < 4) continue;
-            for (j = 1; j < length; j++) {
+
+            for (var j = 1; j < length; j++) {
                 var cell = row.cells[j].innerHTML;
                 if (cell.length < 40) continue;
                 var arrs = cell.split(/<br[^<]*><br[^<]*>/);
-                for (k = 0; k < arrs.length; k += 1) {
+
+                for (var k = 0; k < arrs.length; k += 1) {
                     var e = arrs[k].split(/<br[^<]*>/);
-                    c.push(e);
+                    data.push(e);
                 }
             }
         }
-        return c;
+        return data;
     }
 
     function getCSV(startDay) {
-        var i, j;
-        var c = getData();
-        var result = "Subject,Start Date,Start Time,End Date,End Time,Location\n";
-        /* 生成结果 */
-        for (i = 0; i < c.length; i++) {
-            var t = c[i][1];
-            /* 获取课程在一周内的偏移 */
-            var dayOffset = "一二三四五六日".indexOf(t.charAt(1));
-            /* 获取节次 */
-            var classOrder = t.match(/第.*节/)[0].slice(1, -1).split(',');
-            /* 获取上课和下课时间 */
-            var time = getTime(classOrder);
-            /* 获取周次 */
-            var weeks = t.match(/{.*}/)[0].slice(2, -2).split('-');
+        var data = getData(),
+            result = "Subject,Start Date,Start Time,End Date,End Time,Location\n";
 
-            /* 生成csv */
-            for (j = weeks[0] - 1; j < weeks[1]; j++) {
-                var arr = [];
-                var date = parseDate(getCourseDate(startDay, j, dayOffset));
-                arr.push(c[i][0]);
+        for (var i = 0; i < data.length; i++) {
+            var when = data[i][1],
+                dayOffset = "一二三四五六日".indexOf(when.charAt(1)),         /* 课程在一周内的偏移 */
+                classOrder = when.match(/第.*节/)[0].slice(1, -1).split(','), /* 节次 */
+                time = getTime(classOrder),                                   /* 上课和下课时间 */
+                weeks = when.match(/{.*}/)[0].slice(2, -2).split('-');        /* 周次 */
+
+            for (var weekOffset = weeks[0] - 1; weekOffset < weeks[1]; weekOffset++) {
+                var arr = [],
+                    date = stringifyDate(getCourseDate(startDay, weekOffset, dayOffset));
+
+                arr.push(data[i][0]);
                 arr.push(date);
                 arr.push(time[0]);
                 arr.push(date);
                 arr.push(time[1]);
-                arr.push(c[i][3]);
+                arr.push(data[i][3]);
                 result += arr.join(',') + '\n';
             }
         }
@@ -556,40 +561,42 @@ page.on('xskbcx.aspx', function() {
     }
 
     function getICS(startDay) {
-        var i, j;
-        var c = getData();
-        var result = "BEGIN:VCALENDAR\nPRODID:-//dgeibi/gdut-jwgl-helper//Calendar 1.0//EN\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:课程表\nX-WR-TIMEZONE:Asia/Shanghai\n";
-        /* 生成结果 */
-        for (i = 0; i < c.length; i++) {
-            var t = c[i][1];
-            /* 获取课程在一周内的偏移 */
-            var dayOffset = "一二三四五六日".indexOf(t.charAt(1));
-            /* 获取节次 */
-            var classOrder = t.match(/第.*节/)[0].slice(1, -1).split(',');
-            /* 获取上课和下课时间 */
-            var time = getTime(classOrder);
-            /* 获取周次 */
-            var weeks = t.match(/{.*}/)[0].slice(2, -2).split('-');
+        var data = getData(),
+            result = "BEGIN:VCALENDAR\n" +
+                "PRODID:-//vtmer/gdut-jwgl-helper//Calendar 1.0//EN\n" +
+                "VERSION:2.0\n" +
+                "CALSCALE:GREGORIAN\n" +
+                "METHOD:PUBLISH\n" +
+                "X-WR-CALNAME:课程表\n" +
+                "X-WR-TIMEZONE:Asia/Shanghai\n";
 
-            /* 生成ics*/
-            for (j = weeks[0] - 1; j < weeks[1]; j++) {
-                result += "BEGIN:VEVENT\n";
-                result += "DTSTART:" + getCourseTime(startDay, j, dayOffset, time[0]) + "\n";
-                result += "DTEND:" + getCourseTime(startDay, j, dayOffset, time[1]) + "\n";
-                result += "LOCATION:" + c[i][3] + "\n";
-                result += "SUMMARY:" + c[i][0] + "\n";
-                result += "END:VEVENT\n";
-            }
+        for (var i = 0; i < data.length; i++) {
+            var when = data[i][1],
+                dayOffset = "一二三四五六日".indexOf(when.charAt(1)),         /* 课程在一周内的偏移 */
+                classOrder = when.match(/第.*节/)[0].slice(1, -1).split(','), /* 节次 */
+                time = getTime(classOrder),                                   /* 上课和下课时间 */
+                weeks = when.match(/{.*}/)[0].slice(2, -2).split('-'),
+                weekOffset = weeks[0] - 1,                                    /* 首次上课的周次偏移 */
+                count = weeks[1] - weeks[0] + 1,                              /* 上课周数 */
+                day = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"][dayOffset];
+
+            result += "BEGIN:VEVENT\n";
+            result += "DTSTART:" + getCourseTime(startDay, weekOffset, dayOffset, time[0]) + "\n";
+            result += "DTEND:" + getCourseTime(startDay, weekOffset, dayOffset, time[1]) + "\n";
+            result += "RRULE:FREQ=WEEKLY;BYDAY=" + day + ";COUNT=" + count + "\n";
+            result += "LOCATION:" + data[i][3] + "\n";
+            result += "SUMMARY:" + data[i][0] + "\n";
+            result += "END:VEVENT\n";
         }
         result += "END:VCALENDAR\n";
         return result;
     }
 
     /* 用于返回回调函数的函数 */
-    var getGenerateFunc = function(fileType) {
-        var func = null;
-        var exName = "";
-        var mime = "";
+    function getGenerateFunc(fileType) {
+        var func = null,
+            exName, mime;
+
         if (fileType.toLowerCase() === "ics") {
             func = getICS;
             exName = "ics";
@@ -599,30 +606,34 @@ page.on('xskbcx.aspx', function() {
             exName = "csv";
             mime = "text/csv";
         }
-        var clickFunc = function() {
+
+        function clickFunc() {
             var value = startDayC.value;
+
             if (!/^(?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)$/.test(value)) {
                 alert('你输入的日期无效！请输入有效的日期，如 "2016-08-29"');
                 return;
             }
-            var url = "data:" + mime + ";charset=utf-8," + encodeURIComponent(func(value));
-            var fileName = "curriculum." + exName;
-            var link = document.createElement("a");
+
+            var url = "data:" + mime + ";charset=utf-8," + encodeURIComponent(func(value)),
+                fileName = "curriculum." + exName,
+                link = document.createElement("a");
+
             if (link.download !== undefined) {
                 link.setAttribute("href", url);
                 link.setAttribute("download", fileName);
                 var event = new MouseEvent('click');
                 link.dispatchEvent(event);
             }
-        };
+        }
         return clickFunc;
-    };
+    }
 
-    var bar = document.getElementById("Table2");
-    var barRow = bar.insertRow(bar.length);
+    var btn, label,
+        bar = document.getElementById("Table2"),
+        barRow = bar.insertRow(bar.length),
+        startDayC = document.createElement("input"); /* 创建输入开学日期的文本框 */
 
-    /* 创建输入开学日期的文本框 */
-    var startDayC = document.createElement("input");
     startDayC.type = "text";
     startDayC.size = 10;
     startDayC.maxLength = 10;
@@ -630,13 +641,13 @@ page.on('xskbcx.aspx', function() {
     startDayC.onfocus = function(event) {
         event.target.select();
     };
-    var label = document.createElement("label");
+
+    label = document.createElement("label");
     label.innerText = "开学第一天：";
     label.appendChild(startDayC);
     barRow.insertCell(0).appendChild(label);
 
-    /* 创建按钮 */
-    var btn = document.createElement("input");
+    btn = document.createElement("input");
     btn.type = "button";
     btn.style.cursor = "pointer";
     btn.style.margin = "0 0 0 10px";
@@ -652,6 +663,7 @@ page.on('xskbcx.aspx', function() {
     btn.onclick = getGenerateFunc("ics");
     barRow.cells[0].appendChild(btn);
 });
+
 
 // ### 莫名其妙错误页 _(:з」∠)_
 page.on('zdy.htm', function() {
