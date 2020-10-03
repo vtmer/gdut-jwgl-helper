@@ -1,5 +1,5 @@
 {
-  "name": "gdut-jwgl-helper",
+  "name": "gdut-jwgl-helo",
   "version": "0.2.2",
   "description": "Make jwgl.gdut.edu.cn better.",
   "main": "src/gdut-library-helper.js",
@@ -20,7 +20,7 @@
     "grunt-contrib-copy": "*",
     "grunt-contrib-watch": "*",
     "grunt-shell": "*",
-    "mocha": "*",
-    "should": "*"
+    "mocha": "",
+    "should": ""
   }
 }
